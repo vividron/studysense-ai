@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Urbanist";
+  src: url("./assets/fonts/Urbanist-VariableFont_wght.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme{
+  --font-display: "Urbanist", sans-serif;
+  --breakpoint-3xl: 1920px;
+}
+
+@layer base {
+  html{
+    font-family: var(--font-display);
+  }
+}
