@@ -26,7 +26,12 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
+
+// Static folder for document uploads
 app.use('/uploads', express.static(path.join(_dirname, 'uploads')));
+
+// Routes 
+app.use("/api/auth", authRoutes)
 
 const PORT = process.env.PORT || 8000;
 
