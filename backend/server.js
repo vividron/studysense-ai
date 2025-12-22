@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
+import authRoutes from './routes/authRoutes.js'
 
 dotenv.config();
 
@@ -32,6 +33,10 @@ app.use('/uploads', express.static(path.join(_dirname, 'uploads')));
 
 // Routes 
 app.use("/api/auth", authRoutes)
+
+app.use((error, req, res, next) => {
+    res.send(error.message);
+})
 
 const PORT = process.env.PORT || 8000;
 

@@ -16,7 +16,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        select: false 
     },
     profileImage: {
         type: String,
@@ -25,15 +26,15 @@ const userSchema = new mongoose.Schema({
 });
 
 // Hashing password before saving
-userSchema.pre("save", async (next) => {
+userSchema.pre("save", async function() {
     if(!this.isModified('password')){
-        next();
+        return;
     }
     this.password = await bcrypt.hash(this.password, 10);
 });
 
 // Password validation method
-userSchema.methods.matchPassword = async (pass) => {
+userSchema.methods.matchPassword = async function(pass){
     return await bcrypt.compare(pass, this.password);
 }
 
