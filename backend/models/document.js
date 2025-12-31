@@ -23,20 +23,16 @@ const documentSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    content: {
-        type: String,
-        default: ''
-    },
     chunks: [{
         content: {
             type: String,
             required: true
         },
-        chunkIndex: {
-            type: Number,
-            required: true
-        }
     }],
+    summary: {
+        type: String,
+        default: ""
+    },
     uploadDate: {
         type: Date,
         default: Date.now

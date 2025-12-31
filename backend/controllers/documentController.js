@@ -76,7 +76,7 @@ export const getDocument = async (req, res, next) => {
         const doc = await Document.findOne({
             userId: req.user._id,
             _id: req.params.id,
-        }).select('-content -chunks -userId');
+        }).select('-content -chunks -userId -summary');
 
         if (!doc) {
             return res.status(404).json({
@@ -126,6 +126,7 @@ export const getDocuments = async (req, res, next) => {
                 $project: {
                     extractedText: 0,
                     chunks: 0,
+                    summary: 0,
                     quizzes: 0
                 }
             },
