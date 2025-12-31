@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js'
+import documentRoutes from './routes/documentRoutes.js';
 
 dotenv.config();
 
@@ -32,7 +33,8 @@ app.use(express.urlencoded({extended : true}));
 app.use('/uploads', express.static(path.join(_dirname, 'uploads')));
 
 // Routes 
-app.use("/api/auth", authRoutes)
+app.use("/api/auth", authRoutes);
+app.use("/api/documents", documentRoutes);
 
 app.use((error, req, res, next) => {
     res.send(error.message);

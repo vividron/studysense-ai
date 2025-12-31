@@ -7,7 +7,7 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = path.dirname(_filename);
 
 const uploadPath = path.join(_dirname, '../uploads');
-fs.mkdirSync(dir, { recursive: true })
+fs.mkdirSync(uploadPath, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
