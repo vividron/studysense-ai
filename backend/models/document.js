@@ -27,9 +27,28 @@ const documentSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    chunks: [{
+        content: {
+            type: String,
+            required: true
+        },
+        chunkIndex: {
+            type: Number,
+            required: true
+        }
+    }],
     uploadDate: {
         type: Date,
         default: Date.now
+    },
+    lastAccessed: {
+        type: Date,
+        default: Date.now
+    },
+    status: {
+        type: String,
+        enum: ['processing', 'ready', 'failed'],
+        default: 'processing'
     }
 }, { timestamps: true });
 
