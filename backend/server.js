@@ -9,6 +9,7 @@ import documentRoutes from './routes/documentRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import quizRoutes from './routes/quizRoutes.js';
 import activityRoutes from './routes/activityRoutes.js';
+import errorHandler from './middleware/errorHandler.js';
 
 dotenv.config();
 
@@ -42,9 +43,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/quizzes", quizRoutes);
 app.use("/activity", activityRoutes);
 
-app.use((error, req, res, next) => {
-    res.send(error.message);
-})
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
 

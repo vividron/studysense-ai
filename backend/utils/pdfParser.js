@@ -12,6 +12,8 @@ export const parsePDF = async (filePath) => {
 
     } catch (error) {
         console.error("PDf parsing error");
-        throw new Error("Failed to extract text from pdf.");
+        const err = new Error("Failed to extract text from pdf.");
+        err.statusCode = 400;
+        throw err;
     }
 }
