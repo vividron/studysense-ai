@@ -4,36 +4,31 @@ import Quiz from "../models/quiz.js";
 import * as geminiService from "../utils/geminiService.js";
 import { findRelevantChunks } from "../utils/textChunker.js";
 
-async function checkDocument(documentId, userId) {
-    const doc = await Document.findOne({
-        _id: documentId,
-        userId
-    });
-
-    if (!doc) {
-        return res.status(400).json({
-            success: false,
-            error: 'Document not found',
-            statusCode: 400
-        });
-    }
-
-    if (doc.status === "processing" || doc.status === "failed") {
-        doc.deleteOne();
-        return res.status(400).json({
-            success: false,
-            error: 'Not able to process document, Try uploading it again',
-            statusCode: 400
-        });
-    }
-    return doc;
-}
-
 // Generate quiz from document
 export const generateQuiz = async (req, res, next) => {
     try {
         const { documentId, numOfQuestions, title } = req.body;
-        const doc = await checkDocument(documentId, req.user._id);
+        const doc = await Document.findOne({
+            _id: documentId,
+            userId: req.user._id
+        });
+
+        if (!doc) {
+            return res.status(400).json({
+                success: false,
+                error: 'Document not found',
+                statusCode: 400
+            });
+        }
+
+        if (doc.status === "processing" || doc.status === "failed") {
+            await doc.deleteOne();
+            return res.status(400).json({
+                success: false,
+                error: 'Not able to process document, Try uploading it again',
+                statusCode: 400
+            });
+        }
 
         // Generate full content of document from chunks
         const fullContent = doc.chunks.map(c => c.content).join("\n");
@@ -70,12 +65,31 @@ export const chat = async (req, res, next) => {
                 statusCode: 400
             });
         }
-        const doc = await checkDocument(documentId, userId);
+        const doc = await Document.findOne({
+            _id: documentId,
+            userId
+        });
+
+        if (!doc) {
+            return res.status(400).json({
+                success: false,
+                error: 'Document not found',
+                statusCode: 400
+            });
+        }
+
+        if (doc.status === "processing" || doc.status === "failed") {
+            await doc.deleteOne();
+            return res.status(400).json({
+                success: false,
+                error: 'Not able to process document, Try uploading it again',
+                statusCode: 400
+            });
+        }
 
         // Find chunks with high keyword match
         const chunks = findRelevantChunks(doc.chunks, question, 3);
         const context = chunks.map(c => c.content).join("\n");
-        console.log(context);
 
         const answer = await geminiService.chat(question, context);
 
@@ -150,7 +164,27 @@ export const getChatHistory = async (req, res, next) => {
 export const generateSummary = async (req, res, next) => {
     try {
         const { documentId } = req.body;
-        const doc = await checkDocument(documentId, req.user._id);
+        const doc = await Document.findOne({
+            _id: documentId,
+            userId: req.user._id
+        });
+
+        if (!doc) {
+            return res.status(400).json({
+                success: false,
+                error: 'Document not found',
+                statusCode: 400
+            });
+        }
+
+        if (doc.status === "processing" || doc.status === "failed") {
+            await doc.deleteOne();
+            return res.status(400).json({
+                success: false,
+                error: 'Not able to process document, Try uploading it again',
+                statusCode: 400
+            });
+        }
 
         // Generate full content of document from chunks
         const fullContent = doc.chunks.map(c => c.content).join("\n");
@@ -172,8 +206,28 @@ export const generateSummary = async (req, res, next) => {
 export const getSummary = async (req, res, next) => {
     try {
         const documentId = req.params.documentId;
-        const doc = await checkDocument(documentId, req.user._id);
-        console.log(doc.summary);
+        const doc = await Document.findOne({
+            _id: documentId,
+            userId: req.user._id
+        });
+
+        if (!doc) {
+            return res.status(400).json({
+                success: false,
+                error: 'Document not found',
+                statusCode: 400
+            });
+        }
+
+        if (doc.status === "processing" || doc.status === "failed") {
+            await doc.deleteOne();
+            return res.status(400).json({
+                success: false,
+                error: 'Not able to process document, Try uploading it again',
+                statusCode: 400
+            });
+        }
+
         res.status(200).json({
             success: true,
             data: doc.summary,
@@ -182,4 +236,3 @@ export const getSummary = async (req, res, next) => {
         next(error);
     }
 }
-
