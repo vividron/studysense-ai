@@ -33,20 +33,20 @@ export const AuthProvider = ({children}) => {
         }
     }
 
-    const login = ({userData, token}) => {
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(userData));
-         
-        setUser(userData);
-        setIsAuthenticated(true)
-    }
-
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
 
         setUser(null);
         setIsAuthenticated(false);
+    }
+
+    const login = (userData, token) => {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(userData));
+         
+        setUser(userData);
+        setIsAuthenticated(true)
     }
 
     const updateUser = (updatedUserData) => {

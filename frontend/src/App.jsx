@@ -9,12 +9,13 @@ import ActivityPage from './pages/activityPage'
 import QuizPage from './pages/quizzes/QuizPage'
 import QuizResultPage from './pages/quizzes/QuizResultPage'
 import ProfilePage from './pages/ProfilePage'
+import { useAuth } from './context/authContext'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 const App = () => {
-  const isAuthenticated = false;
-  const isLoading = false;
+  const {isAuthenticated, loading} = useAuth();
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className='flex justify-center items-center'>
         Loading...
@@ -32,8 +33,8 @@ const App = () => {
           <Route path="/activity" element={<ActivityPage />} />
           <Route path="/documents" element={<DocumentListPage />} />
           <Route path="/documents/:id" element={<DocumentDetailPage />} />
-          <Route path="/quizzes/: quizId" element={<QuizPage />} />
-          <Route path="/quizzes/: quizId/results" element={<QuizResultPage />} />
+          <Route path="/quizzes/:quizId" element={<QuizPage />} />
+          <Route path="/quizzes/:quizId/results" element={<QuizResultPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
 

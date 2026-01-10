@@ -10,11 +10,27 @@
 
 @theme{
   --font-display: "Urbanist", sans-serif;
-  --breakpoint-3xl: 1920px;
+
+   /* page background */
+  --bg-main: #0B0B0F;
+  /* card/panel background */
+  --bg-surface: #121218;
+  --bg-surface-hover: #18181F; 
+
+  --primary: #8B5CF6;
+  --primary-soft: rgba(126, 93, 202);
 }
 
 @layer base {
   html{
     font-family: var(--font-display);
   }
+  body{
+    background-color: var(--bg-main);
+  }
+
+  input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg-surface) inset;
+  -webkit-text-fill-color: white;
+}
 }
