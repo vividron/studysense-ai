@@ -90,7 +90,7 @@ const SignInPage = () => {
               <input
                 type="password"
                 {...register("password")}
-                className={`w-full rounded-xl bg-transparent border px-11 py-2.5 text-white focus:outline-none focus:border-(--primary) transition ${errors.password ? "border-red-500 focus:border-red-500" : "border-white/10 focus:border-(--primary)"}`}
+                className={`w-full rounded-xl text-xl tracking-widest bg-transparent border px-11 py-2 text-white focus:outline-none focus:border-(--primary) transition ${errors.password ? "border-red-500 focus:border-red-500" : "border-white/10 focus:border-(--primary)"}`}
               />
             </div>
             {errors.password && (
