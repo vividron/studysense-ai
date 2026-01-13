@@ -37,7 +37,7 @@ const SignInPage = () => {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <BookOpenText className="mx-auto text-white mb-4 h-12 w-12 rounded-xl" />
+          <BookOpenText className="mx-auto text-white mb-4 h-12 w-12" />
           <h1 className="text-2xl font-semibold text-white">
             Welcome back
           </h1>

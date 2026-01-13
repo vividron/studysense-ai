@@ -78,11 +78,10 @@ export const getProfile = async () => {
 };
 
 // Update user profile
-export const updateProfile = async (username, email) => {
+export const updateProfile = async (userData) => {
     try {
         const { data } = await api.put(API_PATHS.AUTH.UPDATE_PROFILE, {
-            username,
-            email
+            ...userData
         });
         return data;
     } catch (error) {

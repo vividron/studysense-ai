@@ -10,7 +10,8 @@
 
 @theme{
   --font-display: "Urbanist", sans-serif;
-
+  --breakpoint-desktop: 844px;
+  --breakpoint-tablet: 714px;
    /* page background */
   --bg-main: #0B0B0F;
   /* card/panel background */
