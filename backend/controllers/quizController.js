@@ -1,4 +1,5 @@
 import Quiz from "../models/quiz.js";
+import User from "../models/user.js";
 
 export const getQuizzes = async (req, res, next) => {
     try {
@@ -100,6 +101,28 @@ export const submitQuiz = async (req, res, next) => {
 
         await quiz.save();
 
+        // Validate and change Quiz streak count
+        const user = await User.findById(req.user._id);
+        if (!user.streakDate) {
+            user.streak = 1;
+            user.streakDate = Date.now();
+        }
+        else {
+            const lastDate = new Date(user.streakDate).toLocaleDateString("en-CA");
+            const today = new Date().toLocaleDateString("en-CA");;
+
+            const diff = (new Date(today).getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24);
+
+            if (diff >= 1) {
+                user.streak = 1;
+            }
+            else {
+                user.streak++;
+            }
+            user.streakDate = Date.now();
+        }
+        await user.save();
+
         res.status(200).json({
             success: true,
             data: {
@@ -128,14 +151,14 @@ export const getQuizResult = async (req, res, next) => {
                 statusCode: 400
             });
         }
-        
+
         let correctCount = 0;
         // Create detailed Result
         const results = quiz.questions.map((question, index) => {
             const answer = quiz.userAnswers.find(answer => answer.questionIndex === index);
-            if(answer?.isCorrect) correctCount++;
+            if (answer?.isCorrect) correctCount++;
 
-            return{
+            return {
                 question: question.question,
                 options: question.options,
                 isCorrect: answer?.isCorrect || false,
@@ -166,9 +189,9 @@ export const getQuizResult = async (req, res, next) => {
     }
 }
 
-export const deleteQuiz = async(req, res, next) => {
+export const deleteQuiz = async (req, res, next) => {
     try {
-        const quiz = await Quiz.findOneAndDelete({_id: req.params.id});
+        const quiz = await Quiz.findOneAndDelete({ _id: req.params.id });
 
         if (!quiz) {
             return res.status(400).json({

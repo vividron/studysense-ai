@@ -22,6 +22,14 @@ const userSchema = new mongoose.Schema({
     profileImage: {
         type: String,
         default: null
+    },
+    streak: {
+        type: Number,
+        default: 0
+    },
+    streakDate: {
+        type: Date,
+        default: null
     }
 });
 

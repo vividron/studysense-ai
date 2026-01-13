@@ -32,7 +32,9 @@ export async function signup(req, res, next) {
                 username: user.username,
                 email: user.email,
                 profileImage: user.profileImage,
-                createdAt: user.createdAt
+                createdAt: user.createdAt,
+                streakDate: null,
+                streak: 0
             },
             token,
             message: "User registered successfully"
@@ -52,7 +54,7 @@ export async function signin(req, res, next) {
         if (!user) {
             return res.status(401).json({
                 success: false,
-                error: "Invalid Email",
+                error: "Email not registered",
                 statusCode: 401
             });
         }
@@ -70,6 +72,20 @@ export async function signin(req, res, next) {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
+        // Validate streak
+        if (user.streakDate) {
+            const lastDate = new Date(user.streakDate).toLocaleDateString("en-CA");
+            const today = new Date().toLocaleDateString("en-CA");;
+
+            const diff = (new Date(today).getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24);
+
+            if (diff > 1) {
+                user.streak = 0;
+                user.streakDate = null;
+                await user.save();
+            }
+        }
+
         res.status(200).json({
             success: true,
             user: {
@@ -77,7 +93,9 @@ export async function signin(req, res, next) {
                 username: user.username,
                 email: user.email,
                 profileImage: user.profileImage,
-                createdAt: user.createdAt
+                createdAt: user.createdAt,
+                streakDate: user.streakDate,
+                streak: user.streak
             },
             token,
             message: "Login successful"
@@ -106,11 +124,13 @@ export async function updateProfile(req, res, next) {
     try {
         // Get user from auth middleware protect handler
         const user = req.user
-        const { username, email, profileImage } = req.body;
+        const { username, email, profileImage, streak, streakDate } = req.body;
 
         if (username) user.username = username;
         if (email) user.email = email;
         if (profileImage) user.profileImage = profileImage;
+        if (streak !== undefined) user.streak = streak;
+        if (streakDate) user.streakDate = streakDate;
 
         await user.save();
 
@@ -120,7 +140,9 @@ export async function updateProfile(req, res, next) {
                 id: user._id,
                 username: user.username,
                 email: user.email,
-                profileImage: user.profileImage
+                profileImage: user.profileImage,
+                streak: user.streak,
+                streakDate: user.streakDate
             },
             message: "Profile updated successfully"
         })
