@@ -23,9 +23,13 @@ export const AuthProvider = ({ children }) => {
 
             if (token && userStr) {
                 const parsedUser = JSON.parse(userStr);
-                const userData = validateStreak(parsedUser);
+                const userData = await validateStreak(parsedUser);
                 setUser(userData);
                 setIsAuthenticated(true);
+            }
+            else {
+                console.error("Authentication check failed:" + error);
+                logout();
             }
         } catch (error) {
             console.error("Authentication check failed:" + error);

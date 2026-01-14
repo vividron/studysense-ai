@@ -10,7 +10,7 @@ import QuizPage from './pages/quizzes/QuizPage'
 import QuizResultPage from './pages/quizzes/QuizResultPage'
 import ProfilePage from './pages/ProfilePage'
 import { useAuth } from './context/authContext'
-import ProtectedRoute from './components/auth/ProtectedRoute'
+import ProtectedRoute from './components/ProtectedRoute'
 
 const App = () => {
   const {isAuthenticated, loading} = useAuth();
