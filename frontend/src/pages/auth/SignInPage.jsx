@@ -2,12 +2,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
 import * as authService from "../../api/auth.api.js";
 import toast from "react-hot-toast";
-import { ArrowRight, BookOpenText, Mail, Lock } from "lucide-react";
+import { ArrowRight, BookOpenText, Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signinSchema } from "../../schemas/authSchema.js";
+import { useState } from "react";
 
 const SignInPage = () => {
+
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -63,7 +67,6 @@ const SignInPage = () => {
               />
               <input
                 type="email"
-                placeholder="you@example.com"
                 {...register("email")}
                 className={`w-full rounded-xl bg-transparent border px-11 py-2.5 text-white focus:outline-none transition ${errors.email ? "border-red-500 focus:border-red-500" : "border-white/10 focus:border-(--primary)"}`}
               />
@@ -88,10 +91,20 @@ const SignInPage = () => {
                   }`}
               />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 {...register("password")}
-                className={`w-full rounded-xl text-xl tracking-widest bg-transparent border px-11 py-2 text-white focus:outline-none focus:border-(--primary) transition ${errors.password ? "border-red-500 focus:border-red-500" : "border-white/10 focus:border-(--primary)"}`}
+                className={`w-full rounded-xl ${showPassword ? "" : "text-xl font-bold tracking-widest"} bg-transparent border px-11 py-2 text-white focus:outline-none focus:border-(--primary) transition ${errors.password ? "border-red-500 focus:border-red-500" : "border-white/10 focus:border-(--primary)"}`}
               />
+              {/* Show password button*/}
+              <button
+                type="button"
+                onClick={() => setShowPassword(prev => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2
+                 text-white/60 hover:text-white transition"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
             {errors.password && (
               <p className="text-sm text-red-400 mt-1">
