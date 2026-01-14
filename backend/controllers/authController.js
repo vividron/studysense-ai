@@ -156,10 +156,9 @@ export async function changePassword(req, res, next) {
     try {
         const user = await User.findById(req.user._id).select("+password");
         const { currentPassword, newPassword } = req.body;
-        console.log(user.password)
 
         // validate current password
-        const isValid = user.matchPassword(currentPassword);
+        const isValid = await user.matchPassword(currentPassword);
 
         if (!isValid) {
             return res.status(401).json({

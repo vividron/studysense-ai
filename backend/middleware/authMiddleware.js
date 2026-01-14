@@ -7,7 +7,7 @@ export async function protect(req, res, next) {
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         try {
             // Extract token 
-            const token = req.headers.authorization.split(' ')[1]; 
+            const token = req.headers.authorization.split(' ')[1];
             const decode = jwt.verify(token, process.env.JWT_SECRET);
 
             const user = await User.findById(decode.id);
@@ -27,6 +27,7 @@ export async function protect(req, res, next) {
                 return res.status(401).json({
                     success: false,
                     error: "Token has expired",
+                    type: "token",
                     statusCode: 401
                 });
             }
@@ -34,6 +35,7 @@ export async function protect(req, res, next) {
             return res.status(401).json({
                 success: false,
                 error: "Not authorized, invalid token",
+                type: "token",
                 statusCode: 401
 
             });
@@ -43,6 +45,7 @@ export async function protect(req, res, next) {
         res.status(401).json({
             success: false,
             error: "Not authorized, token not found",
+            type: "token",
             statusCode: 401
         });
     }
