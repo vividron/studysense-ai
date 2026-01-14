@@ -60,7 +60,7 @@ export async function signin(req, res, next) {
         }
 
         // validate password
-        const isValid = user.matchPassword(password);
+        const isValid = await user.matchPassword(password);
 
         if (!isValid) {
             return res.status(401).json({
