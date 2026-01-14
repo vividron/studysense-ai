@@ -37,6 +37,11 @@ axiosInstance.interceptors.response.use(
                 error.message = "Request timed out. Please try again.";
                 error.type = "timeout";
             }
+            else if (error.response?.data?.type === "token") {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.href = "/signin";
+            }
         }
         return Promise.reject(error);
     }

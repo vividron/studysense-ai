@@ -1,5 +1,5 @@
 import api from "./config/axios";
-import API_PATHS from "./apiPaths";
+import API_PATHS from "./utils/apiPaths";
 
 const errorHandler = (error) => {
     // Server responded with error
@@ -30,7 +30,7 @@ const errorHandler = (error) => {
     // request made but no response 
     if (error.request) {
         return {
-            message: "Unable to reach server. Check your internet connection.",
+            message: "Unable to reach server",
         };
     }
 

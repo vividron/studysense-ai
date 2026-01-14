@@ -1,5 +1,6 @@
 import api from "./config/axios";
-import API_PATHS from "./apiPaths";
+import API_PATHS from "./utils/apiPaths";
+import handleApiError from "./utils/handleApiError";
 
 // get all the quizzes for specific document
 export const getQuizzes = async (documentId) => {
@@ -7,7 +8,7 @@ export const getQuizzes = async (documentId) => {
         const { data } = await api.get(API_PATHS.QUIZZES.GET_QUIZZES_FOR_DOC(documentId));
         return data;
     } catch (error) {
-        throw { message: error.response?.data.error || "Unexpected error occurred" };
+        throw handleApiError(error);
     }
 };
 
@@ -17,7 +18,7 @@ export const getQuizById = async (documentId) => {
         const { data } = await api.get(API_PATHS.QUIZZES.GET_QUIZ_BY_ID(documentId));
         return data;
     } catch (error) {
-        throw { message: error.response?.data.error || "Unexpected error occurred" };
+        throw handleApiError(error);
     }
 };
 
@@ -30,7 +31,7 @@ export const submitQuiz = async (documentId, answers) => {
         });
         return data;
     } catch (error) {
-        throw { message: error.response?.data.error || "Unexpected error occurred" };
+        throw handleApiError(error);
     }
 };
 
@@ -40,7 +41,7 @@ export const getQuizResult = async (documentId) => {
         const { data } = await api.get(API_PATHS.QUIZZES.GET_QUIZ_RESULTS(documentId));
         return data;
     } catch (error) {
-        throw { message: error.response?.data.error || "Unexpected error occurred" };
+        throw handleApiError(error);
     }
 };
 
@@ -50,6 +51,6 @@ export const deleteQuiz = async (documentId) => {
         const { data } = await api.delete(API_PATHS.QUIZZES.DELETE_QUIZ(documentId));
         return data;
     } catch (error) {
-        throw { message: error.response?.data.error || "Unexpected error occurred" };
+        throw handleApiError(error);
     }
 };

@@ -1,23 +1,24 @@
 import api from "./config/axios";
-import API_PATHS from "./apiPaths";
+import API_PATHS from "./utils/apiPaths";
+import handleApiError from "./utils/handleApiError";
 
 // Generate quiz from document
 export const generateQuiz = async (documentId) => {
     try {
-        const { data } = await api.post(API_PATHS.AI.GENERATE_QUIZ, {documentId});
+        const { data } = await api.post(API_PATHS.AI.GENERATE_QUIZ, { documentId });
         return data;
     } catch (error) {
-        throw { message: error.response?.data.error || "Unexpected error occurred" };
+        throw handleApiError(error);
     }
 };
 
 // generate summary of document
 export const generateSummary = async (documentId) => {
     try {
-        const { data } = await api.post(API_PATHS.AI.GENERATE_SUMMARY, {documentId});
+        const { data } = await api.post(API_PATHS.AI.GENERATE_SUMMARY, { documentId });
         return data;
     } catch (error) {
-        throw { message: error.response?.data.error || "Unexpected error occurred" };
+        throw handleApiError(error);
     }
 };
 
@@ -29,7 +30,7 @@ export const chat = async (documentId, question) => {
         });
         return data;
     } catch (error) {
-        throw { message: error.response?.data.error || "Unexpected error occurred" };
+        throw handleApiError(error);
     }
 };
 
@@ -38,7 +39,7 @@ export const getChatHistory = async (documentId) => {
         const { data } = await api.get(API_PATHS.AI.GET_CHAT_HISTORY(documentId));
         return data;
     } catch (error) {
-        throw { message: error.response?.data.error || "Unexpected error occurred" };
+        throw handleApiError(error);
     }
 };
 
@@ -47,6 +48,6 @@ export const getSummary = async (documentId) => {
         const { data } = await api.get(API_PATHS.AI.GET_SUMMARY(documentId));
         return data;
     } catch (error) {
-        throw { message: error.response?.data.error || "Unexpected error occurred" };
+        throw handleApiError(error);
     }
 };
