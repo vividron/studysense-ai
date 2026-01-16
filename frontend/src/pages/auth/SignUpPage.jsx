@@ -10,10 +10,12 @@ import { useState } from "react";
 
 const SignUpPage = () => {
 
-  const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
+
+  if(isAuthenticated) navigate("/activity");
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data) => {
     try {
