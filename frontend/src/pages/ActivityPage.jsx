@@ -33,25 +33,25 @@ const ActivityPage = () => {
       label: 'Total Documents',
       value: activityData?.overview.totalDocuments ?? 0,
       icon: FileText,
-      iconColor: "blue-400"
+      iconColor: "text-blue-400"
     },
     {
       label: 'Total Quizzes',
       value: activityData?.overview.totalQuizzes ?? 0,
       icon: CircleQuestionMark,
-      iconColor: "(--primary)"
+      iconColor: "text-(--primary)"
     },
     {
       label: 'Completed Quiz',
       value: activityData?.overview.completedQuiz ?? 0,
       icon: CircleCheckBig,
-      iconColor: "green-400"
+      iconColor: "text-green-400"
     },
     {
       label: 'Average Score',
       value: activityData?.overview.averageScore ?? 0,
       icon: Target,
-      iconColor: "orange-400"
+      iconColor: "text-orange-400"
     }
   ];
 
