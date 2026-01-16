@@ -1,44 +1,6 @@
 import api from "./config/axios";
 import API_PATHS from "./utils/apiPaths";
-
-const errorHandler = (error) => {
-    // Server responded with error
-    if (error.response) {
-        const data = error.response.data;
-
-        // Validation errors (array)
-        if (Array.isArray(data?.error)) {
-            console.error(data.error);
-            return {
-                message: "Invalid inputs",
-            };
-        }
-
-        // Normal API error (string)
-        if (typeof data?.error === "string") {
-            return {
-                message: data.error,
-            };
-        }
-
-        // server error
-        return {
-            message: "Server error occurred",
-        };
-    }
-
-    // request made but no response 
-    if (error.request) {
-        return {
-            message: "Unable to reach server",
-        };
-    }
-
-    return {
-        message: error.message || "Unexpected error occurred",
-    };
-}
-
+import errorHandler from "./utils/errorHandler";
 
 // Sign up a new user
 export const signup = async (username, email, password) => {

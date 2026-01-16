@@ -1,6 +1,6 @@
 import api from "./config/axios";
 import API_PATHS from "./utils/apiPaths";
-import handleApiError from "./utils/handleApiError";
+import errorHandler from "./utils/errorHandler";
 
 // uplaod document
 export const uploadDocument = async (formData) => {
@@ -12,7 +12,7 @@ export const uploadDocument = async (formData) => {
         });
         return data;
     } catch (error) {
-        throw handleApiError(error);
+        throw errorHandler(error);
     }
 };
 
@@ -22,7 +22,7 @@ export const getDocuments = async () => {
         const { data } = await api.get(API_PATHS.DOCUMENTS.GET_DOCUMENTS);
         return data;
     } catch (error) {
-        throw handleApiError(error);
+        throw errorHandler(error);
     }
 };
 
@@ -32,7 +32,7 @@ export const getDocumentById = async (documentId) => {
         const { data } = await api.get(API_PATHS.DOCUMENTS.GET_DOCUMENT_BY_ID(documentId));
         return data;
     } catch (error) {
-        throw handleApiError(error);
+        throw errorHandler(error);
     }
 };
 
@@ -42,6 +42,6 @@ export const deleteDocument = async (documentId) => {
         const { data } = await api.delete(API_PATHS.DOCUMENTS.DELETE_DOCUMENT(documentId));
         return data;
     } catch (error) {
-        throw handleApiError(error);
+        throw errorHandler(error);
     }
 };

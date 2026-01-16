@@ -1,6 +1,6 @@
 import api from "./config/axios";
 import API_PATHS from "./utils/apiPaths";
-import handleApiError from "./utils/handleApiError";
+import errorHandler from "./utils/errorHandler";
 
 // Generate quiz from document
 export const generateQuiz = async (documentId) => {
@@ -8,7 +8,7 @@ export const generateQuiz = async (documentId) => {
         const { data } = await api.post(API_PATHS.AI.GENERATE_QUIZ, { documentId });
         return data;
     } catch (error) {
-        throw handleApiError(error);
+        throw errorHandler(error);
     }
 };
 
@@ -18,7 +18,7 @@ export const generateSummary = async (documentId) => {
         const { data } = await api.post(API_PATHS.AI.GENERATE_SUMMARY, { documentId });
         return data;
     } catch (error) {
-        throw handleApiError(error);
+        throw errorHandler(error);
     }
 };
 
@@ -30,7 +30,7 @@ export const chat = async (documentId, question) => {
         });
         return data;
     } catch (error) {
-        throw handleApiError(error);
+        throw errorHandler(error);
     }
 };
 
@@ -39,7 +39,7 @@ export const getChatHistory = async (documentId) => {
         const { data } = await api.get(API_PATHS.AI.GET_CHAT_HISTORY(documentId));
         return data;
     } catch (error) {
-        throw handleApiError(error);
+        throw errorHandler(error);
     }
 };
 
@@ -48,6 +48,6 @@ export const getSummary = async (documentId) => {
         const { data } = await api.get(API_PATHS.AI.GET_SUMMARY(documentId));
         return data;
     } catch (error) {
-        throw handleApiError(error);
+        throw errorHandler(error);
     }
 };
