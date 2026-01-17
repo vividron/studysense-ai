@@ -12,6 +12,7 @@
   --font-display: "Urbanist", sans-serif;
   --breakpoint-desktop: 844px;
   --breakpoint-tablet: 714px;
+  --breakpoint-xs: 454px;
   /* page background */
   --bg-main: #0B0B0F;
   /* card/panel background */
@@ -35,4 +36,30 @@
     -webkit-box-shadow: 0 0 0px 1000px var(--bg-surface) inset;
     -webkit-text-fill-color: white;
   }
+
+  /* Desktop */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  /* Mobile */
+  @media (max-width: 714px) {
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.35);
+  }
+
 }

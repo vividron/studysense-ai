@@ -76,19 +76,19 @@ const ActivityPage = () => {
   ].sort((a, b) => new Date(a.lastAccessed).getTime() - new Date(b.lastAccessed).getTime());
 
   return (
-    <div className="space-y-8">
-      <div className='flex flex-col gap-1'>
+    <div className="min-h-full space-y-8">
+      <div className='space-y-1'>
         <h1 className="text-2xl font-bold text-white">
           My Activity
         </h1>
         <p className="text-sm text-white/60">
           Track your learning progress
         </p>
-        <div className='tablet:hidden mt-1 h-px gradient bg-linear-to-r from-white/10 via-white/20 to-white/10' />
+        <div className='tablet:hidden mt-2 h-px gradient bg-linear-to-r from-white/10 via-white/20 to-white/10' />
       </div>
 
       {/*Activity stats */}
-      <div className="grid grid-cols-2 desktop:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 xs:grid-cols-2 desktop:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
           <StatCard
             key={index}
@@ -101,7 +101,7 @@ const ActivityPage = () => {
       </div>
 
       {/*Recent activity*/}
-      <div className="bg-(--bg-surface) rounded-xl p-5 border border-white/10 mb-10">
+      <div className="bg-(--bg-surface) rounded-xl p-5 border border-white/10 mb-12">
         <div className="flex items-center gap-2 mb-4">
           <div className="p-2 rounded-full bg-white/5">
             <Clock className="w-4 h-4 text-white/70" />
