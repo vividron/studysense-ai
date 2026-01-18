@@ -4,6 +4,7 @@ import Document from "../models/document.js";
 import { chunkText } from "../utils/textChunker.js";
 import mongoose from "mongoose";
 import Quiz from '../models/quiz.js';
+import { formatFileSize } from '../utils/fileSizeFormatter.js';
 
 export const uploadDocument = async (req, res, next) => {
     try {
@@ -28,12 +29,13 @@ export const uploadDocument = async (req, res, next) => {
         }
 
         const fileurl = `https://localhost:${process.env.PORT || 8000}/uploads/${req.file.filename}`;
+        const fileSize = formatFileSize(req.file.size);
 
         const doc = await Document.create({
             userId: req.user._id,
             fileName: req.file.originalname,
             filePath: fileurl,
-            fileSize: req.file.size,
+            fileSize,
             title,
             status: 'processing'
         });
@@ -58,7 +60,6 @@ export const uploadDocument = async (req, res, next) => {
 
                 await doc.save();
             } catch (error) {
-                console.error("Error processing document:" + error);
                 doc.status = 'failed';
                 await doc.save();
             }
@@ -111,7 +112,7 @@ export const getDocuments = async (req, res, next) => {
             },
             {
                 $lookup: {
-                    from: 'quiz',
+                    from: 'quizzes',
                     as: 'quizzes',
                     localField: '_id',
                     foreignField: 'documentId'

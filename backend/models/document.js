@@ -20,7 +20,7 @@ const documentSchema = new mongoose.Schema({
         required: true
     },
     fileSize: {
-        type: Number,
+        type: String,
         required: true
     },
     chunks: [{
