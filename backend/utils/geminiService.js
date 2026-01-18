@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 
 let ai;
 
-async function getResponse(prompt) {
+const getResponse = async (prompt) => {
     if (!ai) {
         if (!process.env.GEMINI_API_KEY) {
             throw new Error("GEMINI_API_KEY is missing in environment variables");
@@ -11,14 +11,44 @@ async function getResponse(prompt) {
             apiKey: process.env.GEMINI_API_KEY,
         });
     }
+
     return await ai.models.generateContent({
         model: "gemini-2.5-flash-lite",
         contents: prompt
     });
+
+}
+
+const handleApiError = (error, defaultErrorMsg) => {
+    console.log("Gemini error- " + error);
+    const errorMessage = error.message?.toLowerCase() || '';
+
+    // Check for API usage limit
+    if (errorMessage.includes('quota')
+        || errorMessage.includes('rate limit')
+        || errorMessage.includes('requests per')) {
+
+        return new Error("Gemini API usage limit exceeded");
+    }
+
+    // Check token limit (document too large)
+    const isTokenError = errorMessage.includes('token') ||
+        errorMessage.includes('limit') ||
+        errorMessage.includes('exceeded') ||
+        errorMessage.includes('too large') ||
+        errorMessage.includes('resource_exhausted') ||
+        errorMessage.includes('context length');
+
+    if (isTokenError) {
+        return new Error("The document is too large to process.");
+    }
+
+    // Other errors
+    return new Error(defaultErrorMsg);
 }
 
 // Chat with context of document
-export const chat = async(question, context) => {
+export const chat = async (question, context) => {
     const prompt = `You are an AI assistant that answers questions using ONLY the provided context.
     context:
     ${context}
@@ -33,32 +63,28 @@ export const chat = async(question, context) => {
 
     try {
         const answer = await getResponse(prompt);
-        console.log(answer.text);
         return answer.text;
     } catch (error) {
-        console.log("Gemini error: "+error);
-        throw new Error("Failed to process chat request");
+        throw handleApiError(error, "Failed to process chat request");
     }
 }
 
 // Generate summary from document
-export const generateSummary = async(text) => {
-    const prompt = `Provide a concise summary of the following text, highlighting the key concepts, main ideas, and Keep the summary clear and structured.
+export const generateSummary = async (text) => {
+    const prompt = `Provide a detail summary of the following text, highlighting the key concepts, main ideas, and Keep the summary clear and structured.
     
     INSTRUCTIONS:
     - Do NOT include any introduction phrases
     - Return ONLY the summary content.
 
     Text:
-    ${text.slice(0,20000)}`;
+    ${text.slice(0, 20000)}`;
 
     try {
         const summary = await getResponse(prompt);
-        console.log(summary.text);
         return summary.text;
     } catch (error) {
-        console.log("Gemini error: "+error);
-        throw new Error("Failed to generate summary");
+        throw handleApiError(error, "Failed to generate summary");
     }
 }
 
@@ -87,7 +113,6 @@ export const generateQuiz = async (text, numOfQuestion = 10) => {
 
     try {
         const response = await getResponse(prompt);
-        console.log(response.text);
         const aiText = response.text;
 
         const quiz = [];
@@ -117,7 +142,6 @@ export const generateQuiz = async (text, numOfQuestion = 10) => {
         }
         return quiz;
     } catch (error) {
-        console.error("Failed to generate quiz:" + error);
-        throw new Error("Failed to generate quiz");
+        throw handleApiError(error, "Failed to generate quiz");
     }
 }
