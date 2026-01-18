@@ -18,6 +18,7 @@ const API_PATHS = {
         CHAT: "/api/ai/chat",
         GET_SUMMARY: (documentId) => `/api/ai/summary/${documentId}`,
         GET_CHAT_HISTORY: (documentId) => `/api/ai/chat-history/${documentId}`,
+        DELETE_CHAT_HISTORY: (documentId) => `/api/ai/chat-history/${documentId}`,
     },
     QUIZZES: {
         GET_QUIZZES_FOR_DOC: (documentId) => `/api/quizzes/${documentId}`,

@@ -106,26 +106,23 @@ export const chat = async (req, res, next) => {
             });
         }
 
+        const answerObj = {
+            role: "ai",
+            content: answer,
+            timestamp: new Date()
+        }
+
         chatHistory.messages.push({
             role: 'user',
             content: question,
             timestamp: new Date()
-        },
-            {
-                role: "ai",
-                content: answer,
-                timestamp: new Date()
-            });
+        }, answerObj);
 
         await chatHistory.save();
 
         res.status(200).json({
             success: true,
-            data: {
-                question,
-                answer,
-                chatId: chatHistory._id
-            },
+            data: answerObj,
             message: 'Answer generated successfully'
         });
 
@@ -154,6 +151,30 @@ export const getChatHistory = async (req, res, next) => {
         res.status(200).json({
             success: false,
             data: chatHistory.messages,
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const deleteChatHistory = async (req, res, next) => {
+    try {
+        const documentId = req.params.documentId;
+        const chatHistory = await Chat.findOneAndDelete({
+            userId: req.user._id,
+            documentId
+        }).select('messages');
+
+        if (!chatHistory) {
+            return res.status(400).json({
+                success: false,
+                error: 'No chat history found',
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Chat history deleted successfully",
         })
     } catch (error) {
         next(error);

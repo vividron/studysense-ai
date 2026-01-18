@@ -5,7 +5,8 @@ import {
     getChatHistory,
     generateSummary,
     getSummary,
-    generateQuiz
+    generateQuiz,
+    deleteChatHistory
 
 } from '../controllers/aiController.js'
 
@@ -13,6 +14,8 @@ const router = express.Router();
 router.use(protect);
 
 router.get('/chat-history/:documentId', getChatHistory);
+
+router.delete('/chat-history/:documentId', deleteChatHistory);
 
 router.get('/summary/:documentId', getSummary);
 
