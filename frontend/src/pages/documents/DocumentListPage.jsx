@@ -17,7 +17,7 @@ const DocumentListPage = () => {
       const data = await documentService.getDocuments();
       setDocuments(data.documents)
     } catch (error) {
-      toast.error("Failed to fetch documents");
+      toast.error(error.message || "Failed to fetch documents");
       console.error(error);
     } finally {
       setLoading(false);
@@ -126,7 +126,7 @@ const DocumentListPage = () => {
 
 
       {documents.length === 0 ? (
-        <div className="flex flex-col items-center justify-center flex-1 text-center p-5 gap-4 bg-(--bg-surface) rounded-xl border border-white/10 mb-12">
+        <div className="flex flex-col items-center justify-center flex-1 text-center p-5 gap-4 bg-(--bg-surface) rounded-xl border border-white/10">
           <div className="w-20 h-20 rounded-full bg-black/30 flex items-center justify-center border border-white/10">
             <FileText className="w-10 h-10 text-white/80" />
           </div>
@@ -136,8 +136,8 @@ const DocumentListPage = () => {
           </p>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto mb-12">
-          <div className="grid gap-4 grid-cols-1 xs:grid-cols-2 tablet:grid-cols-3 desktop:grid-cols-4">
+        <div className="flex-1 overflow-y-auto">
+          <div className="grid gap-4 grid-cols-1 xs:grid-cols-2 desktop:grid-cols-4">
             {documents.map((doc) => (
               <DocumentCard
                 key={doc._id}

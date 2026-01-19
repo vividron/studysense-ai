@@ -101,7 +101,7 @@ const ActivityPage = () => {
       </div>
 
       {/*Recent activity*/}
-      <div className="bg-(--bg-surface) rounded-xl p-5 border border-white/10 mb-12">
+      <div className="bg-(--bg-surface) rounded-xl p-5 border border-white/10">
         <div className="flex items-center gap-2 mb-4">
           <div className="p-2 rounded-full bg-white/5">
             <Clock className="w-4 h-4 text-white/70" />
@@ -131,7 +131,9 @@ const ActivityPage = () => {
                   </div>
 
                   <p className="text-sm text-white/60 ml-9">
-                    {new Date(recentItem.lastAccessed).toLocaleString()}
+                    {new Date(recentItem.lastAccessed).toLocaleString(undefined, {
+                      dateStyle: "medium", timeStyle: "short"
+                    })}
                   </p>
                 </div>
 
