@@ -8,6 +8,7 @@ const NavItem = ({ variant }) => {
         { to: '/profile', icon: User, text: 'Profile' }
     ];
 
+    {/*Desktop nav*/}
     if (variant === "desktop") {
         return (<nav className="flex items-center gap-6 font-semibold text-sm text-white/70 mx-2">
             {navlinks.map((link) => (
@@ -22,6 +23,7 @@ const NavItem = ({ variant }) => {
             ))}
         </nav>)
     }
+    {/*Mobbile nav */}
     return (<nav className="fixed bottom-0 inset-x-0 bg-(--bg-main) border-t border-white/10 flex justify-around py-2 tablet:hidden">
         {navlinks.map((link) => (
             <NavLink

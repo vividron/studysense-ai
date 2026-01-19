@@ -18,7 +18,7 @@ const AppLayout = ({ children }) => {
       </header>
 
       {/*Main Content*/}
-      <main className="relative flex-1 overflow-x-hidden overflow-y-auto px-4 tablet:px-8 py-6">
+      <main className="relative flex-1 overflow-x-hidden overflow-y-auto p-4 pb-18 tablet:px-8 tablet:py-5">
         {children}
       </main>
 

@@ -43,6 +43,15 @@ export const getChatHistory = async (documentId) => {
     }
 };
 
+export const deleteChatHistory = async (documentId) => {
+    try {
+        const { data } = await api.delete(API_PATHS.AI.DELETE_CHAT_HISTORY(documentId));
+        return data;
+    } catch (error) {
+        throw errorHandler(error);
+    }
+};
+
 export const getSummary = async (documentId) => {
     try {
         const { data } = await api.get(API_PATHS.AI.GET_SUMMARY(documentId));
