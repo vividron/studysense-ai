@@ -4,7 +4,6 @@ import {
     chat,
     getChatHistory,
     generateSummary,
-    getSummary,
     generateQuiz,
     deleteChatHistory
 
@@ -16,8 +15,6 @@ router.use(protect);
 router.get('/chat-history/:documentId', getChatHistory);
 
 router.delete('/chat-history/:documentId', deleteChatHistory);
-
-router.get('/summary/:documentId', getSummary);
 
 // Check if documentId exist in request body
 router.use((req, res, next) => {

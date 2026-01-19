@@ -16,7 +16,6 @@ const API_PATHS = {
         GENERATE_QUIZ: "/api/ai/generate-quiz",
         GENERATE_SUMMARY: "/api/ai/generate-summary",
         CHAT: "/api/ai/chat",
-        GET_SUMMARY: (documentId) => `/api/ai/summary/${documentId}`,
         GET_CHAT_HISTORY: (documentId) => `/api/ai/chat-history/${documentId}`,
         DELETE_CHAT_HISTORY: (documentId) => `/api/ai/chat-history/${documentId}`,
     },

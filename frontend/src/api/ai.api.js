@@ -22,6 +22,7 @@ export const generateSummary = async (documentId) => {
     }
 };
 
+// Chat with ai having document context
 export const chat = async (documentId, question) => {
     try {
         const { data } = await api.post(API_PATHS.AI.CHAT, {
@@ -34,6 +35,7 @@ export const chat = async (documentId, question) => {
     }
 };
 
+// get chat histroy
 export const getChatHistory = async (documentId) => {
     try {
         const { data } = await api.get(API_PATHS.AI.GET_CHAT_HISTORY(documentId));
@@ -43,18 +45,10 @@ export const getChatHistory = async (documentId) => {
     }
 };
 
+// Delete chat history
 export const deleteChatHistory = async (documentId) => {
     try {
         const { data } = await api.delete(API_PATHS.AI.DELETE_CHAT_HISTORY(documentId));
-        return data;
-    } catch (error) {
-        throw errorHandler(error);
-    }
-};
-
-export const getSummary = async (documentId) => {
-    try {
-        const { data } = await api.get(API_PATHS.AI.GET_SUMMARY(documentId));
         return data;
     } catch (error) {
         throw errorHandler(error);

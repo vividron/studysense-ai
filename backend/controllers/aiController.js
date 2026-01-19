@@ -207,6 +207,15 @@ export const generateSummary = async (req, res, next) => {
             });
         }
 
+        // Check if summary exist
+        if (doc.summary) {
+            return res.status(200).json({
+                success: true,
+                data: doc.summary,
+            });
+        }
+
+        // Generate summary
         // Generate full content of document from chunks
         const fullContent = doc.chunks.map(c => c.content).join("\n");
         const summary = await geminiService.generateSummary(fullContent);
@@ -217,41 +226,6 @@ export const generateSummary = async (req, res, next) => {
             success: true,
             data: summary,
             message: "Summary generated successfully"
-        });
-    } catch (error) {
-        next(error);
-    }
-}
-
-// Get summary
-export const getSummary = async (req, res, next) => {
-    try {
-        const documentId = req.params.documentId;
-        const doc = await Document.findOne({
-            _id: documentId,
-            userId: req.user._id
-        });
-
-        if (!doc) {
-            return res.status(400).json({
-                success: false,
-                error: 'Document not found',
-                statusCode: 400
-            });
-        }
-
-        if (doc.status === "processing" || doc.status === "failed") {
-            await doc.deleteOne();
-            return res.status(400).json({
-                success: false,
-                error: 'Not able to process document, Try uploading it again',
-                statusCode: 400
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            data: doc.summary,
         });
     } catch (error) {
         next(error);
