@@ -43,8 +43,8 @@ export const AuthProvider = ({ children }) => {
         try {
             if (!userData?.streakDate) return userData;
 
-            const lastDate = new Date(userData.streakDate).toLocaleDateString("en-CA");
-            const today = new Date().toLocaleDateString("en-CA");
+            const lastDate = new Date(userData.streakDate).toLocaleDateString("en-IN");
+            const today = new Date().toLocaleDateString("en-IN");
 
             const diff = (new Date(today).getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24);
 

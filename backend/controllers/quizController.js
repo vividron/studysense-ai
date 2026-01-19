@@ -1,5 +1,6 @@
 import Quiz from "../models/quiz.js";
 import User from "../models/user.js";
+import { updateQuizStreak } from "../utils/quizStreakHelper.js";
 
 export const getQuizzes = async (req, res, next) => {
     try {
@@ -101,27 +102,9 @@ export const submitQuiz = async (req, res, next) => {
 
         await quiz.save();
 
-        // Validate and change Quiz streak count
+        // Update Quiz streak count
         const user = await User.findById(req.user._id);
-        if (!user.streakDate) {
-            user.streak = 1;
-            user.streakDate = Date.now();
-        }
-        else {
-            const lastDate = new Date(user.streakDate).toLocaleDateString("en-CA");
-            const today = new Date().toLocaleDateString("en-CA");;
-
-            const diff = (new Date(today).getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24);
-
-            if (diff >= 1) {
-                user.streak = 1;
-            }
-            else {
-                user.streak++;
-            }
-            user.streakDate = Date.now();
-        }
-        await user.save();
+        await updateQuizStreak(user);
 
         res.status(200).json({
             success: true,

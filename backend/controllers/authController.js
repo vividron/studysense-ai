@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
+import { validateQuizStreak } from '../utils/quizStreakHelper.js';
 
 // Register user 
 export async function signup(req, res, next) {
@@ -72,19 +73,8 @@ export async function signin(req, res, next) {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-        // Validate streak
-        if (user.streakDate) {
-            const lastDate = new Date(user.streakDate).toLocaleDateString("en-CA");
-            const today = new Date().toLocaleDateString("en-CA");;
-
-            const diff = (new Date(today).getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24);
-
-            if (diff > 1) {
-                user.streak = 0;
-                user.streakDate = null;
-                await user.save();
-            }
-        }
+        // Validate quiz streak
+        await validateQuizStreak(user);
 
         res.status(200).json({
             success: true,
