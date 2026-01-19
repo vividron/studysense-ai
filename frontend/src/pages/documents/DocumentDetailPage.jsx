@@ -5,7 +5,8 @@ import Tabs from "../../components/Tabs";
 import { getDocumentById } from "../../api/document.api"
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
-import ChatUI from "../../components/chat/ChatUI";
+import ChatUI from "../../components/document-detail/ChatUI";
+import SummaryUI from "../../components/document-detail/SummaryUI";
 
 const DocumentDetailPage = () => {
   const { id } = useParams();
@@ -40,7 +41,7 @@ const DocumentDetailPage = () => {
     return (
       <div className="bg-(--bg-surface) border border-white/10 rounded-2xl overflow-hidden shadow-xl h-full">
         <div className="flex justify-between p-5">
-          <span className="text-sm tabler:text-md font-semibold">{document?.uploadDate && new Date(document.uploadDate).toLocaleString(undefined, {
+          <span className="text-sm font-semibold">{document?.uploadDate && new Date(document.uploadDate).toLocaleString(undefined, {
             dateStyle: "medium", timeStyle: "short"
           })}</span>
           {document?.filePath && <a href={document.filePath} target="_blank" className="text-sm tablet:text-md text-white desktop:text-white/80 hover:text-white">
@@ -69,11 +70,7 @@ const DocumentDetailPage = () => {
   }
 
   const renderSummary = () => {
-    return (
-      <div className="p-6 h-full flex items-center justify-center text-white/60">
-        AI-generated summary will appear here ✨
-      </div>
-    )
+    return <SummaryUI />
   }
 
   const renderQuiz = () => {
@@ -94,16 +91,16 @@ const DocumentDetailPage = () => {
   if (loading) return <Loader />
 
   return (
-    <div className="h-full flex flex-col gap-5">
+    <div className="h-full flex flex-col gap-4">
 
       {/* Header */}
-      <div className="flex items-center gap-3 ">
+      <div className="text-[15-px] tablet:text-lg desktop:text-xl font-semibold tracking-wide flex gap-0.5">
         <Link
           to={"/documents"}
-          className="text-sm text-white/80 hover:text-white transition">
-          <ArrowLeft />
+          className="text-blue-500/80 desktop:text-white/80 hover:text-blue-500 hover:underline transition flex items-center gap-2">
+          <h1>Documents/</h1>
         </Link>
-        <h1 className="text-xl font-semibold tracking-wide">{document?.title ?? "Document"}</h1>
+        <h1>{document?.title ?? "Document"}</h1>
       </div>
 
       {/* Tabs */}

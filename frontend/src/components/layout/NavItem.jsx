@@ -16,7 +16,7 @@ const NavItem = ({ variant }) => {
                     key={link.to}
                     to={link.to}
                     className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-xl cursor-pointer 
-                ${isActive ? "bg-purple-600/10 text-purple-400" : "hover:text-white hover:bg-(--bg-surface)"}`}
+                ${isActive ? "bg-(--primary-soft)/10 text-(--primary)" : "hover:text-white hover:bg-(--bg-surface)"}`}
                 >
                     <link.icon className="w-4 h-4" /> {link.text}
                 </NavLink>
@@ -29,7 +29,7 @@ const NavItem = ({ variant }) => {
             <NavLink
                 key={link.to}
                 to={link.to}
-                className={({ isActive }) => `flex flex-col gap-1 items-center text-xs font-semibold ${isActive ? "text-purple-400" : "text-white/60"}`}
+                className={({ isActive }) => `flex flex-col gap-1 items-center text-xs font-semibold ${isActive ? "text-(--primary)" : "text-white/60"}`}
             >
                 <link.icon className="w-5 h-5" /> {link.text}
             </NavLink>
