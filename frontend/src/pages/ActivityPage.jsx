@@ -73,10 +73,10 @@ const ActivityPage = () => {
       link: `/quizzes/${quiz._id}`,
       type: quiz.completedAt ? 'quiz-completed' : 'quiz-created'
     }))
-  ].sort((a, b) => new Date(a.lastAccessed).getTime() - new Date(b.lastAccessed).getTime());
+  ].sort((a, b) => new Date(b.lastAccessed).getTime() - new Date(a.lastAccessed).getTime());
 
   return (
-    <div className="min-h-full space-y-8">
+    <div className="min-h-full space-y-8 select-none">
       <div className='space-y-1'>
         <h1 className="text-2xl font-bold text-white">
           My Activity
@@ -137,8 +137,8 @@ const ActivityPage = () => {
                   </p>
                 </div>
 
-                {/* Right action */}
-                <Link to={recentItem.link} className="text-sm font-medium text-white transition group-hover:scale-110 mr-5 hover:text-purple-400 ">
+                {/* View document link*/}
+                <Link to={recentItem.link} className="text-sm font-medium text-white transition group-hover:scale-110 mr-5 hover:text-blue-400 hover:underline">
                   View
                 </Link>
               </div>
