@@ -27,7 +27,7 @@ const SummaryUI = () => {
 
     useEffect(() => {
         fetchSummary();
-    }, []);
+    }, [id]);
 
     return (
         <div className="h-full flex bg-(--bg-surface) border border-white/10 rounded-2xl overflow-hidden">

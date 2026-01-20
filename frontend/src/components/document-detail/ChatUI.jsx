@@ -42,7 +42,7 @@ const ChatUI = () => {
 
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [id]);
 
   const handleSend = async () => {
 
@@ -95,7 +95,6 @@ const ChatUI = () => {
 
           {messages.map((msg, index) => {
             const content = msg.content;
-            console.log(content)
             const isUser = msg.role === "user";
             return (
               <div
