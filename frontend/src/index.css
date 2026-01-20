@@ -20,8 +20,7 @@
   --bg-surface: #121218;
   --bg-surface-hover: #18181F;
 
-  --primary: #8B5CF6;
-  --primary-soft: rgba(126, 93, 202);
+  --primary: #3B82F6;
 }
 
 @layer base {

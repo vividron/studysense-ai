@@ -64,7 +64,7 @@ const SignInPage = () => {
               <Mail
                 className={`absolute left-3 top-1/2 -translate-y-1/2 transition ${errors.email
                   ? "text-red-400 group-focus-within:text-red-400"
-                  : "text-white/70 group-focus-within:text-(--primary-soft)"
+                  : "text-white/70 group-focus-within:text-(--primary)/80"
                   }`}
               />
               <input
@@ -89,7 +89,7 @@ const SignInPage = () => {
               <Lock
                 className={`absolute left-3 top-1/2 -translate-y-1/2 transition ${errors.password
                   ? "text-red-400 group-focus-within:text-red-400"
-                  : "text-white/70 group-focus-within:text-(--primary-soft)"
+                  : "text-white/70 group-focus-within:text-(--primary)/80"
                   }`}
               />
               <input
@@ -119,11 +119,8 @@ const SignInPage = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-2 flex items-center justify-center gap-2
-           rounded-xl bg-(--primary) bg-linear-to-r from-(--primary) to-purple-500 py-2.5
-           font-medium text-white
-           hover:opacity-90 disabled:opacity-60
-           transition;"
+            className="w-full mt-2 flex items-center justify-center gap-2 rounded-xl bg-(--primary) bg-linear-to-r
+            from-blue-500 to-indigo-500 py-2.5 font-medium text-white hover:opacity-90 disabled:opacity-60 transition;"
           >
             {isSubmitting ? "Signing in..." : (
               <>
@@ -136,7 +133,7 @@ const SignInPage = () => {
 
         <p className="mt-6 text-center text-sm text-white/60">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-(--primary-soft) hover:underline">
+          <Link to="/signup" className="text-(--primary)/80 hover:text-(--primary) hover:underline">
             Sign up
           </Link>
         </p>
