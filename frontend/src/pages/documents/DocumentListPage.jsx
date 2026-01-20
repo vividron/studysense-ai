@@ -5,7 +5,7 @@ import * as documentService from "../../api/document.api"
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 import UploadDocumentModal from "../../components/documents/UploadDocumentModal";
-import DeleteConfirmationModal from "../../components/documents/DeleteConfimModal";
+import DeleteConfirmationModal from "../../components/DeleteConfimModal";
 import DocumentCard from "../../components/documents/DocumentCard";
 
 const DocumentListPage = () => {
@@ -41,13 +41,14 @@ const DocumentListPage = () => {
     setLoading(true);
 
     try {
-      await documentService.uploadDocument(formData);
+      const data = await documentService.uploadDocument(formData);
       toast.success("Document uploaded successfully!");
+      console.log(data)
+      setDocuments(prev => [...prev, data.document].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)));
       setShowUploadModal(false)
-      fetchDocuments();
     } catch (error) {
       toast.error(error.message || "Upload failed")
-    }finally{
+    } finally {
       setLoading(false);
     }
 
@@ -120,7 +121,8 @@ const DocumentListPage = () => {
           isDeleting={isDeleting}
           onCancel={handleCancelDelete}
           onConfirm={handleConfirmDelete}
-          fileName={docToDelete?.title}
+          title={"Delete Document"}
+          message={`Are you sure you want to delete "${docToDelete?.title ?? "the document"}"? This will also delete all associated quizzes and chat history. This action cannot be undone.`}
         />
       )}
 
