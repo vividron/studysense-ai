@@ -15,8 +15,8 @@ const NavItem = ({ variant }) => {
                 <NavLink
                     key={link.to}
                     to={link.to}
-                    className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-xl cursor-pointer 
-                ${isActive ? "bg-(--primary-soft)/10 text-(--primary)" : "hover:text-white hover:bg-(--bg-surface)"}`}
+                    className={({ isActive }) => `flex items-center text-[15px] gap-2 px-4 py-2 rounded-xl cursor-pointer 
+                ${isActive ? "bg-(--primary)/5 text-(--primary)" : "hover:text-white hover:bg-(--bg-surface)"}`}
                 >
                     <link.icon className="w-4 h-4" /> {link.text}
                 </NavLink>

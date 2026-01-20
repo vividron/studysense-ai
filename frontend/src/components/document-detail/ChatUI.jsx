@@ -103,8 +103,8 @@ const ChatUI = () => {
               >
                 {/* Message */}
                 <div
-                  className={`max-w-[50%] tablet:max-w-[70%] px-4 py-3 text-xs tablet:text-sm rounded-2xl leading-relaxed ${isUser
-                    ? "bg-(--primary-soft) text-white rounded-br-sm"
+                  className={`max-w-[50%] tablet:max-w-[70%] px-4 py-3 text-xs tablet:text-sm rounded-2xl leading-relaxed select-text ${isUser
+                    ? "bg-(--primary)/70 text-white rounded-br-sm"
                     : "bg-white/5 text-white/80 rounded-bl-sm border border-white/10"
                     }`}
                 >

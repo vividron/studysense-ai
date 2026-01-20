@@ -38,7 +38,7 @@ const SummaryUI = () => {
                     <p className="text-sm mt-20 text-white/50">Getting document summary...</p>
                 </div> :
                 // Chat messages
-                <div className="flex-1 overflow-y-auto px-5 py-6">
+                <div className="flex-1 overflow-y-auto px-5 py-6 select-text">
                     {
                         !summary ? <div className="h-full flex justify-center items-center">
                             <p className="text-lg text-white/50">Error generating summary!</p>
