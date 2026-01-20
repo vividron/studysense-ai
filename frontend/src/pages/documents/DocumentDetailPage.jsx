@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FileText, MessageCircle, Sparkles, HelpCircle, ArrowLeft } from "lucide-react";
+import { FileText, MessageCircle, Sparkles, HelpCircle } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Tabs from "../../components/Tabs";
 import { getDocumentById } from "../../api/document.api"
@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 import ChatUI from "../../components/document-detail/ChatUI";
 import SummaryUI from "../../components/document-detail/SummaryUI";
+import QuizzesInterface from "../../components/quizzes/QuizzesInterface";
 
 const DocumentDetailPage = () => {
   const { id } = useParams();
@@ -35,7 +36,7 @@ const DocumentDetailPage = () => {
 
   useEffect(() => {
     fetchDocument();
-  }, [])
+  }, [id])
 
   const renderDocView = () => {
     return (
@@ -64,22 +65,10 @@ const DocumentDetailPage = () => {
     )
   }
 
+  const renderChat = () => <ChatUI />
 
-  const renderChat = () => {
-    return <ChatUI />
-  }
-
-  const renderSummary = () => {
-    return <SummaryUI />
-  }
-
-  const renderQuiz = () => {
-    return (
-      <div className="p-6 h-full flex items-center justify-center text-white/60">
-        Interactive quizzes will be shown here 🧠
-      </div>
-    )
-  }
+  const renderSummary = () => <SummaryUI />
+  const renderQuiz = () => <QuizzesInterface />
 
   const tabs = [
     { label: "View", icon: FileText, content: renderDocView() },
