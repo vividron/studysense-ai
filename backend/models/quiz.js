@@ -24,13 +24,7 @@ const quizSchema = new mongoose.Schema({
             },
             options: {
                 type: [String],
-                required: true,
-                validate: {
-                    validator: function (arr) {
-                        return arr.length === 4;
-                    },
-                    message: "Must have exactly 4 options"
-                }
+                required: true
             },
             correctAnswer: {
                 type: String,
@@ -59,10 +53,6 @@ const quizSchema = new mongoose.Schema({
             isCorrect: {
                 type: Boolean,
                 required: true
-            },
-            answeredAt: {
-                type: Date,
-                default: Date.now
             }
         }
     ],

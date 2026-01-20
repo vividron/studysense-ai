@@ -125,7 +125,7 @@ export const generateQuiz = async (text, numOfQuestion = 10) => {
             for (const field of fieldArray) {
                 const trimmed = field.trim();
                 if (trimmed.startsWith("Q:")) question = trimmed.slice(2).trim();
-                else if (trimmed.startsWith("OP")) options.push(trimmed.slice(3).trim());
+                else if (trimmed.startsWith("OP")) options.push(trimmed.slice(4).trim());
                 else if (trimmed.startsWith('C:')) correctAnswer = trimmed.slice(2).trim();
                 else if (trimmed.startsWith('E:')) explanation = trimmed.slice(2).trim();
                 else if (trimmed.startsWith('D:')) {

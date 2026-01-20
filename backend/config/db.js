@@ -5,7 +5,7 @@ try{
     await mongoose.connect(process.env.MONGODB_URI);
     console.log("MongoDB connected successfully")
 }catch(err){
-    console.error("Error " + err.message);
+    console.error("MongoDB error " + err.message);
     process.exit(1);
 }
 }

@@ -89,7 +89,7 @@ export const getDocument = async (req, res, next) => {
 
         await Document.updateOne(
             { _id: doc._id },
-            { $set: { lastAccessed: Date.now() } }
+            { $set: { lastAccessed: new Date() } }
         );
 
         const quizCount = await Quiz.countDocuments({ userId: req.user._id, documentId: req.params.id });

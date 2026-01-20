@@ -4,7 +4,6 @@ import { updateQuizStreak } from "../utils/quizStreakHelper.js";
 
 export const getQuizzes = async (req, res, next) => {
     try {
-        console.log('i am in get quizzes')
         const quizzes = await Quiz.find({
             userId: req.user._id,
             documentId: req.params.documentId
@@ -30,7 +29,6 @@ export const getQuizzes = async (req, res, next) => {
 
 export const getQuizById = async (req, res, next) => {
     try {
-        console.log("i am in get quiz by id")
         const quiz = await Quiz.findById(req.params.id);
 
         if (!quiz) {
@@ -87,8 +85,7 @@ export const submitQuiz = async (req, res, next) => {
                 userAnswers.push({
                     questionIndex,
                     selectedAnswer,
-                    isCorrect,
-                    answeredAt: answer.answeredAt ?? new Date()
+                    isCorrect
                 });
             }
         });
