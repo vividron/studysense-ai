@@ -82,9 +82,10 @@ const UploadDocumentModal = ({ onClose, handleUpload }) => {
                 <Button
                     label={"Upload Document"}
                     shrinkText={false}
-                    style={"w-full"}
+                    className="w-full"
                     type={"submit"}
                     isSubmitting={isSubmitting}
+                    onSubmittingText={"Uploading..."}
                 />
             </form>
         </div>
