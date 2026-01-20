@@ -5,11 +5,7 @@ import errorHandler from "./utils/errorHandler";
 // Sign up a new user
 export const signup = async (username, email, password) => {
     try {
-        const { data } = await api.post(API_PATHS.AUTH.REGISTER, {
-            username,
-            email,
-            password
-        });
+        const { data } = await api.post(API_PATHS.AUTH.REGISTER, { username, email, password });
         return data;
     } catch (error) {
         throw errorHandler(error);
@@ -19,10 +15,7 @@ export const signup = async (username, email, password) => {
 // Sign in user
 export const signin = async (email, password) => {
     try {
-        const { data } = await api.post(API_PATHS.AUTH.LOGIN, {
-            email,
-            password
-        });
+        const { data } = await api.post(API_PATHS.AUTH.LOGIN, { email, password });
         return data;
     } catch (error) {
         throw errorHandler(error);
@@ -42,9 +35,7 @@ export const getProfile = async () => {
 // Update user profile
 export const updateProfile = async (userData) => {
     try {
-        const { data } = await api.put(API_PATHS.AUTH.UPDATE_PROFILE, {
-            ...userData
-        });
+        const { data } = await api.put(API_PATHS.AUTH.UPDATE_PROFILE, { ...userData });
         return data;
     } catch (error) {
         throw errorHandler(error);
@@ -54,10 +45,7 @@ export const updateProfile = async (userData) => {
 // Change password
 export const changePassword = async (currentPassword, newPassword) => {
     try {
-        const { data } = await api.post(API_PATHS.AUTH.CHANGE_PASSWORD, {
-            currentPassword,
-            newPassword
-        });
+        const { data } = await api.post(API_PATHS.AUTH.CHANGE_PASSWORD, { currentPassword, newPassword });
         return data;
     } catch (error) {
         errorHandler(error);

@@ -23,12 +23,9 @@ export const getQuizById = async (documentId) => {
 };
 
 // Submit the quiz
-export const submitQuiz = async (documentId, answers) => {
+export const submitQuiz = async (quizId, answers) => {
     try {
-        const { data } = await api.post(API_PATHS.QUIZZES.SUBMIT_QUIZ, {
-            documentId,
-            answers
-        });
+        const { data } = await api.post(API_PATHS.QUIZZES.SUBMIT_QUIZ(quizId), { answers });
         return data;
     } catch (error) {
         throw errorHandler(error);

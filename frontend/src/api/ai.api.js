@@ -3,9 +3,9 @@ import API_PATHS from "./utils/apiPaths";
 import errorHandler from "./utils/errorHandler";
 
 // Generate quiz from document
-export const generateQuiz = async (documentId) => {
+export const generateQuiz = async (documentId, numOfQuestions, title) => {
     try {
-        const { data } = await api.post(API_PATHS.AI.GENERATE_QUIZ, { documentId });
+        const { data } = await api.post(API_PATHS.AI.GENERATE_QUIZ, { documentId, numOfQuestions, title });
         return data;
     } catch (error) {
         throw errorHandler(error);
@@ -25,10 +25,7 @@ export const generateSummary = async (documentId) => {
 // Chat with ai having document context
 export const chat = async (documentId, question) => {
     try {
-        const { data } = await api.post(API_PATHS.AI.CHAT, {
-            documentId,
-            question
-        });
+        const { data } = await api.post(API_PATHS.AI.CHAT, { documentId, question });
         return data;
     } catch (error) {
         throw errorHandler(error);
