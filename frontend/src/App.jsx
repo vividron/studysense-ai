@@ -11,14 +11,15 @@ import QuizResultPage from './pages/quizzes/QuizResultPage'
 import ProfilePage from './pages/ProfilePage'
 import { useAuth } from './context/authContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import Loader from './components/Loader'
 
 const App = () => {
   const {isAuthenticated, loading} = useAuth();
 
   if (loading) {
     return (
-      <div className='flex justify-center items-center'>
-        Loading...
+      <div className='h-screen w-screen'>
+        <Loader/>
       </div>
     )
   }

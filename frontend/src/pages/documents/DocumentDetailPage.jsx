@@ -28,6 +28,7 @@ const DocumentDetailPage = () => {
       setDocument(data);
     } catch (error) {
       toast.error(error.message || "failed to fetch document")
+      navigate("/documents");
       console.error(error);
     } finally {
       setLoading(false);
