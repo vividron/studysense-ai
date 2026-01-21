@@ -111,7 +111,9 @@ export const submitQuiz = async (req, res, next) => {
                 score,
                 totalQuestions: quiz.questions.length,
                 correctCount,
-                userAnswers
+                userAnswers,
+                streak: user.streak,
+                streakDate: user.streakDate
             },
             message: "Quiz submitted successfully"
         });
