@@ -1,5 +1,6 @@
 import { Flame } from "lucide-react"
 import { useAuth } from "../../context/authContext"
+import { Link } from "react-router-dom";
 
 const UserProfile = () => {
     const {user} = useAuth();
@@ -17,7 +18,9 @@ const UserProfile = () => {
                 </span>
             </div>
             {/*User info*/}
-            <div className="flex gap-2 items-center">
+            <Link 
+            to={"/profile"}
+            className="flex gap-2 items-center">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full 
                 border-2 border-(--primary)
                 text-sm font-semibold text-(--primary)">
@@ -27,7 +30,7 @@ const UserProfile = () => {
                     <p className="text-sm font-semibold text-white/90">{user.username ?? ""}</p>
                     <p className="text-xs text-white/70">{user.email ?? ""}</p>
                 </div>
-            </div>
+            </Link>
         </div>
     )
 }

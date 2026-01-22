@@ -1,16 +1,19 @@
 import { BookOpenText } from "lucide-react";
 import NavItem from "./NavItem";
 import UserProfile from "./UserProfile";
+import { Link } from "react-router-dom";
 
 const AppLayout = ({ children }) => {
 
   return (
     <div className="h-screen flex flex-col bg-(--bg-main) text-white select-none">
       <header className="hidden tablet:flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0">
-        <div className="flex items-center gap-3">
+        <Link 
+        to={"/"}
+        className="flex items-center gap-3">
           <BookOpenText className="text-white h-8 w-8" />
           <span className="text-xl font-bold">StudySense</span>
-        </div>
+        </Link>
         {/*top navbar*/}
         <NavItem variant={"desktop"} />
         {/*User Profile*/}

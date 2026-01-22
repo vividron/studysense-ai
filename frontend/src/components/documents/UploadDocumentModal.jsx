@@ -2,7 +2,7 @@ import { Upload, X } from "lucide-react";
 import Button from "../Button";
 import { useForm } from "react-hook-form";
 
-const UploadDocumentModal = ({ onClose, handleUpload }) => {
+const UploadDocumentModal = ({ onClose, handleUpload, isUploading }) => {
     const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm();
     const file = watch("file")?.[0];
     return (

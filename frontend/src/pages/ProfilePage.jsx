@@ -61,7 +61,7 @@ const ProfilePage = () => {
 
   return (
 
-    <div className="min-h-full max-w-4xl mx-auto space-y-8 flex flex-col justify-center">
+    <div className="min-h-full max-w-2xl mx-auto space-y-8 flex flex-col justify-center">
 
       {/* Header */}
       <div className='space-y-1'>

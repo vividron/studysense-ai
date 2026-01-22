@@ -38,7 +38,6 @@ const DocumentListPage = () => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("document", file);
-    setLoading(true);
 
     try {
       const data = await documentService.uploadDocument(formData);
@@ -48,10 +47,7 @@ const DocumentListPage = () => {
       setShowUploadModal(false)
     } catch (error) {
       toast.error(error.message || "Upload failed")
-    } finally {
-      setLoading(false);
     }
-
   }
 
   // delete document confirmation modal
