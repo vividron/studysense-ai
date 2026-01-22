@@ -48,6 +48,6 @@ export const changePassword = async (currentPassword, newPassword) => {
         const { data } = await api.post(API_PATHS.AUTH.CHANGE_PASSWORD, { currentPassword, newPassword });
         return data;
     } catch (error) {
-        errorHandler(error);
+        throw errorHandler(error);
     }
 };

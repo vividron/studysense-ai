@@ -28,4 +28,8 @@ export const updateProfileSchema = z.object({
 export const changePasswordSchema = z.object({
   currentPassword: z.string().nonempty("Current password is required"),
   newPassword: passwordSchema,
+  confirmNewPassword: z.string().nonempty("Please confirm your password")
+}).refine((data) => data.newPassword === data.confirmNewPassword, {
+  message: "Passwords do not match",
+  path: ["confirmNewPassword"]
 });
