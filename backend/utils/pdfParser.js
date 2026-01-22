@@ -1,19 +1,15 @@
-import fs from 'fs/promises';
 import {PDFParse} from 'Pdf-parse';
+import { AppError } from './AppError.js';
 
-export const parsePDF = async (filePath) => {
+export const parsePDF = async (fileUrl) => {
     try {
-        const dataBuffer = await fs.readFile(filePath);
-        const parser = new PDFParse({data: new Uint8Array(dataBuffer)});
+        const parser = new PDFParse({url: fileUrl});
     
         const result = await parser.getText();
         await parser.destroy();
         return result.text;
 
     } catch (error) {
-        console.error("PDf parsing error");
-        const err = new Error("Failed to extract text from pdf.");
-        err.statusCode = 400;
-        throw err;
+        throw new AppError("Failed to extract text from pdf.", "pdf", 400, error);
     }
 }

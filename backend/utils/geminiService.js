@@ -1,4 +1,5 @@
-import { GoogleGenAI } from "@google/genai";
+import {  GoogleGenAI } from "@google/genai";
+import { AppError } from "./AppError.js";
 
 let ai;
 
@@ -19,7 +20,7 @@ const getResponse = async (prompt) => {
 
 }
 
-const handleApiError = (error, defaultErrorMsg) => {
+export const handleGemniniApiError = (error, defaultErrorMsg) => {
     console.log("Gemini error- " + error);
     const errorMessage = error.message?.toLowerCase() || '';
 
@@ -28,7 +29,7 @@ const handleApiError = (error, defaultErrorMsg) => {
         || errorMessage.includes('rate limit')
         || errorMessage.includes('requests per')) {
 
-        return new Error("Gemini API usage limit exceeded");
+        return new AppError("AI service is busy. Please try again later.", "rateLimit", 400, error);
     }
 
     // Check token limit (document too large)
@@ -40,11 +41,11 @@ const handleApiError = (error, defaultErrorMsg) => {
         errorMessage.includes('context length');
 
     if (isTokenError) {
-        return new Error("The document is too large to process.");
+        return new AppError("The document is too large to process.", "tokenLimit", 400, error);
     }
 
     // Other errors
-    return new Error(defaultErrorMsg);
+    return new AppError(defaultErrorMsg, "internalError", 400, error);
 }
 
 // Chat with context of document

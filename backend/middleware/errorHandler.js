@@ -1,54 +1,52 @@
 const errorHandler = (err, req, res, next) => {
-    let statusCode = err.statusCode || 500;
-    let message = err.message || 'Server Error';
-    
-    // Mongoose invalid ObjectId
-    if (err.name === 'CastError') {
-        message = 'Resource not found';
-        statusCode = 404;
-    }
-    // Mongoose duplicate key
-    if (err.code === 11000) {
-        const field = Object.keys(err.keyValue)[0];
-        message = `${field} already exists`;
-        statusCode = 400;
-    }
-    // Mongoose validation error
-    if (err.name === 'ValidationError') {
-        message = Object.values(err.errors).map(val => val.message).join(', ');
-        statusCode = 400;
-    }
-    // MongoDB network error
+
+  console.error("Error:", err);
+
+  let statusCode = err.statusCode || 500;
+  let message = "Something went wrong. Please try again later.";
+
+  // Auth errors
+  if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
+    statusCode = 401;
+    message = "Authentication failed. Please login again.";
+  }
+
+  // File upload limit
+  if (err.code === "LIMIT_FILE_SIZE") {
+    statusCode = 400;
+    message = "Uploaded file is too large.";
+  }
+
+  // Duplicate data
+  if (err.code === 11000) {
+    statusCode = 400;
+    message = "Duplicate data already exists.";
+  }
+
+  // MongoDB network error
     if(err.name === 'MongoNetworkError'){
-        message = 'MongoDB server down';
+        message = 'Server down please try agaian later';
         statusCode = 503;
     }
 
-    // Multer file size error
-    if (err.code === 'LIMIT_FILE_SIZE') {
-        message = 'File size exceeds the maximum limit of 10MB';
-        statusCode = 400;
-    }
+  // AI error
+  if (err.type === "rateLimit") {
+    message = err.message;
+  }
 
-    // JWT errors
-    if (err.name === 'JsonWebTokenError') {
-        message = 'Invalid token';
-        statusCode = 401;
-    }
-    if (err.name === 'TokenExpiredError') {
-        message = 'Token expired';
-        statusCode = 401;
-    }
+  if (err.type === "tokenLimit") {
+    message = err.message;
+  }
 
-    console.error('Error:', {
-        message: err.message,
-        stack: err.stack
-    });
-    res.status(statusCode).json({
-        success: false,
-        error: message,
-        statusCode,
-    });
+  // Pdf error
+  if (err.type === "pdf") {
+    message = err.message;
+  }
+
+  res.status(statusCode).json({
+    success: false,
+    error: message
+  });
 };
 
 export default errorHandler;
