@@ -24,10 +24,8 @@ const documentSchema = new mongoose.Schema({
         required: true
     },
     chunks: [{
-        content: {
-            type: String,
-            required: true
-        },
+        type: String,
+        required: true
     }],
     summary: {
         type: String,
@@ -49,7 +47,7 @@ const documentSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // indexing for faster queries
-documentSchema.index({userId: 1});
+documentSchema.index({ userId: 1 });
 
 const Document = mongoose.model('Document', documentSchema);
 

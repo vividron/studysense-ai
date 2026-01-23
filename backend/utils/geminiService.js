@@ -1,12 +1,12 @@
-import {  GoogleGenAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { AppError } from "./AppError.js";
 
 let ai;
 
 const getResponse = async (prompt) => {
     if (!ai) {
-        if (!process.env.GEMINI_API_KEY) {
-            throw new Error("GEMINI_API_KEY is missing in environment variables");
+        if (!process.env.GEMINI_API_KEY || !process.env.GEMINI_MODEL) {
+            throw new Error("Gemni api key or model name is missing in .env");
         }
         ai = new GoogleGenAI({
             apiKey: process.env.GEMINI_API_KEY,
@@ -14,14 +14,13 @@ const getResponse = async (prompt) => {
     }
 
     return await ai.models.generateContent({
-        model: "gemini-2.5-flash-lite",
+        model: process.env.GEMINI_MODEL,
         contents: prompt
     });
 
 }
 
 export const handleGemniniApiError = (error, defaultErrorMsg) => {
-    console.log("Gemini error- " + error);
     const errorMessage = error.message?.toLowerCase() || '';
 
     // Check for API usage limit
@@ -45,7 +44,7 @@ export const handleGemniniApiError = (error, defaultErrorMsg) => {
     }
 
     // Other errors
-    return new AppError(defaultErrorMsg, "internalError", 400, error);
+    return new AppError(defaultErrorMsg, "gemini", 400, error);
 }
 
 // Chat with context of document
@@ -58,15 +57,15 @@ export const chat = async (question, context) => {
     ${question}
     
     INSTRUCTIONS:
-    - If the answer is NOT present in the context, reply exactly with:
-      "Sorry, I was unable to find the answer in the provided Document."
+    - If the context is empty OR does not contain the answer, then reply exactly with:
+    "Sorry, I was unable to find the answer in the provided Document."
     - Answer Question as standalone facts, not references to a context source`;
 
     try {
         const answer = await getResponse(prompt);
         return answer.text;
     } catch (error) {
-        throw handleApiError(error, "Failed to process chat request");
+        throw handleGemniniApiError(error, "Failed to process chat request");
     }
 }
 
@@ -85,7 +84,7 @@ export const generateSummary = async (text) => {
         const summary = await getResponse(prompt);
         return summary.text;
     } catch (error) {
-        throw handleApiError(error, "Failed to generate summary");
+        throw handleGemniniApiError(error, "Failed to generate summary");
     }
 }
 
@@ -143,6 +142,6 @@ export const generateQuiz = async (text, numOfQuestion = 10) => {
         }
         return quiz;
     } catch (error) {
-        throw handleApiError(error, "Failed to generate quiz");
+        throw handleGemniniApiError(error, "Failed to generate quiz");
     }
 }

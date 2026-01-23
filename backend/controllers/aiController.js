@@ -1,8 +1,9 @@
 import Chat from "../models/chat.js";
+import Chunk from "../models/chunk.js";
 import Document from "../models/document.js";
 import Quiz from "../models/quiz.js";
 import * as geminiService from "../utils/geminiService.js";
-import { findRelevantChunks } from "../utils/textChunker.js";
+import { generateEmbedding } from "../utils/textChunker.js";
 
 // Generate quiz from document
 export const generateQuiz = async (req, res, next) => {
@@ -31,7 +32,7 @@ export const generateQuiz = async (req, res, next) => {
         }
 
         // Generate full content of document from chunks
-        const fullContent = doc.chunks.map(c => c.content).join("\n");
+        const fullContent = doc.chunks.join("\n");
 
         const questions = await geminiService.generateQuiz(fullContent, numOfQuestions);
 
@@ -87,10 +88,35 @@ export const chat = async (req, res, next) => {
             });
         }
 
-        // Find chunks with high keyword match
-        const chunks = findRelevantChunks(doc.chunks, question, 3);
-        const context = chunks.map(c => c.content).join("\n");
+        // Get embbedings realted to question asked 
+        const embeddingResponse = await generateEmbedding([question]);
+        const questionEmbedding = embeddingResponse.embeddings[0].values;
 
+        // vector search 
+        const result = await Chunk.aggregate([
+            {
+                $vectorSearch: {
+                    index: "vector_index",
+                    path: "embedding",
+                    queryVector: questionEmbedding,
+                    numCandidates: 100,
+                    limit: 3,
+                    filter: {
+                        documentId: doc._id
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    content: 1
+                }
+            }
+        ]);
+
+        let context = "";
+        if(result.length>0) context = result.map(c => c.content).join("\n");
+        
         const answer = await geminiService.chat(question, context);
 
         let chatHistory = await Chat.findOne({
@@ -217,7 +243,7 @@ export const generateSummary = async (req, res, next) => {
 
         // Generate summary
         // Generate full content of document from chunks
-        const fullContent = doc.chunks.map(c => c.content).join("\n");
+        const fullContent = doc.chunks.join("\n");
         const summary = await geminiService.generateSummary(fullContent);
 
         await Document.updateOne({ _id: documentId }, { $set: { summary: summary } });
