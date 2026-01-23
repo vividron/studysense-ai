@@ -1,15 +1,18 @@
-import fs from 'fs/promises';
 import { parsePDF } from "../utils/pdfParser.js";
 import Document from "../models/document.js";
 import { chunkText } from "../utils/textChunker.js";
-import mongoose from "mongoose";
 import Quiz from '../models/quiz.js';
+import Chat from '../models/chat.js';
+import Chunk from "../models/chunk.js";
 import { formatFileSize } from '../utils/fileSizeFormatter.js';
+import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { s3 } from "../config/aws.js";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export const uploadDocument = async (req, res, next) => {
     try {
-
-        if (!req.file) {
+        const file = req.file;
+        if (!file) {
             return res.status(400).json({
                 success: false,
                 error: "Please upload the document",
@@ -20,7 +23,6 @@ export const uploadDocument = async (req, res, next) => {
         const { title } = req.body;
 
         if (!title) {
-            fs.unlink(req.file.path).catch(error => console.error("Failed to unlink file:" + error));
             return res.status(400).json({
                 success: false,
                 error: "Title for the document is requried",
@@ -28,13 +30,22 @@ export const uploadDocument = async (req, res, next) => {
             });
         }
 
-        const fileurl = `https://localhost:${process.env.PORT || 8000}/uploads/${req.file.filename}`;
+        const fileKey = `${req.user._id}/${Date.now()}-${file.originalname}`;
+
+        // Upload to S3
+        await s3.send(new PutObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: fileKey,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+        }));
+
         const fileSize = formatFileSize(req.file.size);
 
         const doc = await Document.create({
             userId: req.user._id,
             fileName: req.file.originalname,
-            filePath: fileurl,
+            fileKey,
             fileSize,
             title,
             status: 'processing'
@@ -42,42 +53,51 @@ export const uploadDocument = async (req, res, next) => {
 
         res.status(201).json({
             success: true,
-            document: doc,
+            document: {
+                ...doc.toObject(),
+                quizCount: 0
+            },
             message: "Document uploaded and processing started"
         });
 
-        (async () => {
-            try {
-
-                const extractedText = await parsePDF(req.file.path);
-
-                // Creat chunks
-                const chunks = await chunkText(extractedText, 500, 10);
-
-                doc.content = extractedText;
-                doc.chunks = chunks;
-                doc.status = 'ready';
-
-                await doc.save();
-            } catch (error) {
-                doc.status = 'failed';
-                await doc.save();
-            }
-        })();
+        processDocument(doc, file.buffer);
 
     } catch (error) {
-        // Clean up files on error 
-        fs.unlink(req.file.path).catch(error => console.error("Failed to unlink file:" + error));
         next(error);
     }
 }
+
+const processDocument = async (doc, buffer) => {
+    try {
+        const extractedText = await parsePDF(buffer);
+        // create chunks
+        const chunks = await chunkText(extractedText, 500, 20);
+
+        doc.chunks = chunks.map((c) => c.content);
+        doc.status = "ready";
+
+        // insert in chunk collection for vector search
+        const chunkDocs = chunks.map(c => ({
+            documentId: doc._id,
+            content: c.content,
+            embedding: c.embedding
+        }));
+
+        await Chunk.insertMany(chunkDocs);
+
+    } catch (err) {
+        console.error("Document processing failed:", err);
+        doc.status = "failed";
+    }
+    await doc.save();
+};
 
 export const getDocument = async (req, res, next) => {
     try {
         const doc = await Document.findOne({
             userId: req.user._id,
             _id: req.params.id,
-        }).select('-content -chunks -userId -summary');
+        }).select('-chunks -userId -summary');
 
         if (!doc) {
             return res.status(404).json({
@@ -94,9 +114,22 @@ export const getDocument = async (req, res, next) => {
 
         const quizCount = await Quiz.countDocuments({ userId: req.user._id, documentId: req.params.id });
 
+
+        const getCommand = new GetObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: doc.fileKey,
+        });
+
+        // Generate Pre-Signed URL (6 hrs)
+        const signedUrl = await getSignedUrl(s3, getCommand, { expiresIn: 21600 });
+
         res.status(200).json({
             success: true,
-            data: { ...doc.toObject(), quizCount }
+            data: {
+                ...doc.toObject(),
+                filePath: signedUrl,
+                quizCount,
+            }
         });
 
     } catch (error) {
@@ -108,7 +141,7 @@ export const getDocuments = async (req, res, next) => {
     try {
         const doc = await Document.aggregate([
             {
-                $match: { userId: new mongoose.Types.ObjectId(req.user._id) }
+                $match: { userId: req.user._id }
             },
             {
                 $lookup: {
@@ -151,15 +184,25 @@ export const deleteDocument = async (req, res, next) => {
         const doc = await Document.findOneAndDelete({ userId: req.user._id, _id: req.params.id });
 
         if (!doc) {
-            returnres.status(404).json({
+            return res.status(404).json({
                 success: false,
                 error: "Document not found",
                 statuscode: 404
             });
         }
 
-        // Delete the file from file system 
-        await fs.unlink(doc.filePath).catch(error => console.error("Deleting file from file system failed:" + error));
+        // Delete doc from s3
+        if (doc.fileKey) {
+            await s3.send(new DeleteObjectCommand({
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: doc.fileKey,
+            }));
+        }
+
+        // Delete quizzes, chat history , chunks
+        await Quiz.deleteMany({ documentId: doc._id });
+        await Chat.deleteMany({ documentId: doc._id });
+        await Chunk.deleteMany({ documentId: doc._id });
 
         res.status(200).json({
             success: true,

@@ -1,9 +1,9 @@
-import {PDFParse} from 'Pdf-parse';
+import {PDFParse} from 'pdf-parse';
 import { AppError } from './AppError.js';
 
-export const parsePDF = async (fileUrl) => {
+export const parsePDF = async (dataBuffer) => {
     try {
-        const parser = new PDFParse({url: fileUrl});
+        const parser = new PDFParse({data: dataBuffer});
     
         const result = await parser.getText();
         await parser.destroy();

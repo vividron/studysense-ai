@@ -15,9 +15,9 @@ const documentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    filePath: {
+    fileKey: {
         type: String,
-        required: true
+        default: null
     },
     fileSize: {
         type: String,
