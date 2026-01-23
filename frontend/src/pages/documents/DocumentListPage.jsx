@@ -18,7 +18,6 @@ const DocumentListPage = () => {
       setDocuments(data.documents)
     } catch (error) {
       toast.error(error.message || "Failed to fetch documents");
-      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -42,7 +41,6 @@ const DocumentListPage = () => {
     try {
       const data = await documentService.uploadDocument(formData);
       toast.success("Document uploaded successfully!");
-      console.log(data)
       setDocuments(prev => [...prev, data.document].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)));
       setShowUploadModal(false)
     } catch (error) {

@@ -16,7 +16,6 @@ const ActivityPage = () => {
       setActivityData(data.data);
     } catch (error) {
       toast.error(error.message || "Failed to fetch Activity");
-      console.error(error.message);
     } finally {
       setLoading(false);
     }
