@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 import { getQuizById } from "../../api/quiz.api";
 import { submitQuiz } from "../../api/quiz.api";
-import QuestionCard from "../../components/quizzes/questionCard";
+import QuestionCard from "../../components/quizzes/QuestionCard";
 import { useAuth } from "../../context/authContext";
 
 const QuizPage = () => {

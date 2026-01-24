@@ -11,7 +11,7 @@ import QuizResultPage from './pages/quizzes/QuizResultPage'
 import ProfilePage from './pages/ProfilePage'
 import { useAuth } from './context/authContext'
 import ProtectedRoute from './components/ProtectedRoute'
-import Loader from './components/Loader'
+import Loader from './components/Loader.jsx'
 
 const App = () => {
   const {isAuthenticated, loading} = useAuth();
