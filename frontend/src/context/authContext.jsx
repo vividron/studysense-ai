@@ -28,7 +28,6 @@ export const AuthProvider = ({ children }) => {
                 setIsAuthenticated(true);
             }
             else {
-                console.error("Authentication check failed:" + error);
                 logout();
             }
         } catch (error) {

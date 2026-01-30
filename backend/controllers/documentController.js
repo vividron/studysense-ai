@@ -1,75 +1,112 @@
-import { parsePDF } from "../utils/pdfParser.js";
+import { parsePDFStream } from "../utils/pdfParser.js";
 import Document from "../models/document.js";
 import { chunkText } from "../utils/textChunker.js";
 import Quiz from '../models/quiz.js';
 import Chat from '../models/chat.js';
 import Chunk from "../models/chunk.js";
 import { formatFileSize } from '../utils/fileSizeFormatter.js';
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { s3 } from "../config/aws.js";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
+import pLimit from "p-limit";
 
-export const uploadDocument = async (req, res, next) => {
+// Max 3 concurrent parsing
+const parseLimit = pLimit(3);
+
+export const getUploadUrl = async (req, res, next) => {
     try {
-        const file = req.file;
-        if (!file) {
+        const { fileName, fileType } = req.body;
+
+        if (!fileName || !fileType) {
             return res.status(400).json({
                 success: false,
-                error: "Please upload the document",
-                statuscode: 400
+                error: "Missing required fields"
             });
         }
 
-        const { title } = req.body;
-
-        if (!title) {
+        if (fileType !== "application/pdf") {
             return res.status(400).json({
                 success: false,
-                error: "Title for the document is requried",
-                statuscode: 400
+                error: "Document should be in PDF format"
             });
         }
 
-        const fileKey = `${req.user._id}/${Date.now()}-${file.originalname}`;
+        const fileKey = `${req.user._id}/${Date.now()}-${fileName}`;
 
-        // Upload to S3
-        await s3.send(new PutObjectCommand({
+        // Create presigned POST policy limiting size to 10MB and enforcing content type
+        const { url, fields } = await createPresignedPost(s3, {
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: fileKey,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-        }));
-
-        const fileSize = formatFileSize(req.file.size);
-
-        const doc = await Document.create({
-            userId: req.user._id,
-            fileName: req.file.originalname,
-            fileKey,
-            fileSize,
-            title,
-            status: 'processing'
-        });
+            Conditions: [
+                ["content-length-range", 0, 10 * 1024 * 1024],
+                ["starts-with", "$Content-Type", "application/pdf"],
+                ["starts-with", "$key", `${req.user._id}`]
+            ],
+            Fields: {
+                "Content-Type": fileType
+            }
+        }, { expiresIn: 300 }); // expires in 5 min
 
         res.status(201).json({
             success: true,
-            document: {
-                ...doc.toObject(),
-                quizCount: 0
-            },
-            message: "Document uploaded and processing started"
+            data: {
+                uploadUrl: { url, fields },
+                fileKey
+            }
         });
-
-        processDocument(doc, file.buffer);
 
     } catch (error) {
         next(error);
     }
 }
 
-const processDocument = async (doc, buffer) => {
+export const processDocument = async (req, res, next) => {
     try {
-        const extractedText = await parsePDF(buffer);
+        const { fileName, fileSize, fileKey, title } = req.body;
+
+        if (!fileName || !fileSize || !fileKey || !title) {
+            return res.status(400).json({
+                success: false,
+                error: "Missing required fields"
+            });
+        }
+
+        const doc = await Document.create({
+            userId: req.user._id,
+            fileName,
+            fileKey,
+            fileSize: formatFileSize(fileSize),
+            title,
+            status: 'processing'
+        });
+
+        parseLimit(() => startParsing(doc._id, doc.fileKey));
+
+        res.status(200).json({
+            success: true,
+            data: {
+                ...doc.toObject(),
+                quizCount: 0
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const startParsing = async (documentId, fileKey) => {
+    let doc
+    try {
+        doc = await Document.findById(documentId);
+        if (!doc) return
+
+        const { Body } = await s3.send(new GetObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: fileKey
+        }));
+
+        const extractedText = await parsePDFStream(Body);
         // create chunks
         const chunks = await chunkText(extractedText, 500, 20);
 
@@ -78,7 +115,7 @@ const processDocument = async (doc, buffer) => {
 
         // insert in chunk collection for vector search
         const chunkDocs = chunks.map(c => ({
-            documentId: doc._id,
+            documentId,
             content: c.content,
             embedding: c.embedding
         }));
@@ -87,10 +124,10 @@ const processDocument = async (doc, buffer) => {
 
     } catch (err) {
         console.error("Document processing failed:", err);
-        doc.status = "failed";
+        if (doc) doc.status = "failed";
     }
-    await doc.save();
-};
+    if (doc) await doc.save();
+}
 
 export const getDocument = async (req, res, next) => {
     try {

@@ -2,16 +2,12 @@ const errorHandler = (error) => {
 
   // network error
   if (!navigator.onLine) {
-    return {
-      message: "No internet connection. Please check your network.",
-    };
+    return new Error("No internet connection. Please check your network.");
   }
 
   // request made but no response 
   if (!error.response) {
-    return {
-      message: "Unable to reach server",
-    };
+    return new Error("Unable to reach server");
   }
 
   const data = error.response.data;
@@ -19,15 +15,11 @@ const errorHandler = (error) => {
   // Validation errors (array)
   if (Array.isArray(data?.error)) {
     console.error(data.error);
-    return {
-      message: "Invalid inputs",
-    };
+    return new Error("Invalid inputs");
   }
 
   // server error (string)
-  return {
-    message: data?.error || "Unexpected error occurred"
-  };
+  return new Error(data?.error || "Unexpected error occurred")
 };
 
 export default errorHandler;

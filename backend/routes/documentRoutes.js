@@ -1,19 +1,21 @@
 import express from 'express';
 
 import {
-    uploadDocument,
+    getUploadUrl,
+    processDocument,
     getDocuments,
     getDocument,
     deleteDocument
 } from '../controllers/documentController.js';
 
 import {protect} from '../middleware/authMiddleware.js';
-import upload from '../config/multer.js';
 
 const router = express.Router();
 router.use(protect);
 
-router.post('/upload', upload.single("document"), uploadDocument);
+router.post('/get-upload-url', getUploadUrl);
+
+router.post('/process-document', processDocument);
 
 router.get('/', getDocuments);
 

@@ -22,7 +22,15 @@ export const generateQuiz = async (req, res, next) => {
             });
         }
 
-        if (doc.status === "processing" || doc.status === "failed") {
+        if (doc.status === "processing") {
+            return res.status(400).json({
+                success: false,
+                error: 'This document is still processing. Please try again in a moment.',
+                statusCode: 400
+            });
+        }
+
+        if (doc.status === "failed") {
             await doc.deleteOne();
             return res.status(400).json({
                 success: false,
@@ -79,7 +87,15 @@ export const chat = async (req, res, next) => {
             });
         }
 
-        if (doc.status === "processing" || doc.status === "failed") {
+        if (doc.status === "processing") {
+            return res.status(400).json({
+                success: false,
+                error: 'This document is still processing. Please try again in a moment.',
+                statusCode: 400
+            });
+        }
+
+        if (doc.status === "failed") {
             await doc.deleteOne();
             return res.status(400).json({
                 success: false,
@@ -115,8 +131,8 @@ export const chat = async (req, res, next) => {
         ]);
 
         let context = "";
-        if(result.length>0) context = result.map(c => c.content).join("\n");
-        
+        if (result.length > 0) context = result.map(c => c.content).join("\n");
+
         const answer = await geminiService.chat(question, context);
 
         let chatHistory = await Chat.findOne({
@@ -224,7 +240,15 @@ export const generateSummary = async (req, res, next) => {
             });
         }
 
-        if (doc.status === "processing" || doc.status === "failed") {
+        if (doc.status === "processing") {
+            return res.status(400).json({
+                success: false,
+                error: 'This document is still processing. Please try again in a moment.',
+                statusCode: 400
+            });
+        }
+
+        if (doc.status === "failed") {
             await doc.deleteOne();
             return res.status(400).json({
                 success: false,

@@ -7,7 +7,8 @@ const API_PATHS = {
         CHANGE_PASSWORD: "/api/auth/change-password",
     },
     DOCUMENTS: {
-        UPLOAD: "/api/documents/upload",
+        GET_UPLOAD_URL: "api/documents/get-upload-url",
+        PROCESS_DOCUMENT: "api/documents/process-document",
         GET_DOCUMENTS: "api/documents",
         GET_DOCUMENT_BY_ID: (id) => `/api/documents/${id}`,
         DELETE_DOCUMENT: (id) => `/api/documents/${id}`

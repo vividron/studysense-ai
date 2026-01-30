@@ -33,15 +33,22 @@ const DocumentListPage = () => {
   const handleUpload = async (data) => {
     const title = data.title;
     const file = data.file[0];
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("document", file);
+    if (file.size > 10 * 1024 * 1024){
+      toast.error("Document size should be at max 10MB");
+      return;
+    }
 
     try {
-      const data = await documentService.uploadDocument(formData);
+      // get signed put url to upload document
+      const { data } = await documentService.getUploadUrl(file.name, file.type);
+
+      // Upload document directly to s3
+      await documentService.uploadToS3(data.uploadUrl, file);
       toast.success("Document uploaded successfully!");
-      setDocuments(prev => [...prev, data.document].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)));
+
+      // Notify backend to save document data in DB and start parsing 
+      const res = await documentService.processDocument(file.name, file.size, data.fileKey, title);
+      setDocuments(prev => [...prev, res.data].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)));
       setShowUploadModal(false)
     } catch (error) {
       toast.error(error.message || "Upload failed")
