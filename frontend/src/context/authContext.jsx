@@ -42,10 +42,15 @@ export const AuthProvider = ({ children }) => {
         try {
             if (!userData?.streakDate) return userData;
 
-            const lastDate = new Date(userData.streakDate).toLocaleDateString("en-IN");
-            const today = new Date().toLocaleDateString("en-IN");
+            const today = new Date();
+            const lastDate = new Date(user.streakDate);
 
-            const diff = (new Date(today).getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24);
+            // Reset time to midnight for accurate day diff
+            lastDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            // convert miliseconds to days
+            const diff = Math.floor((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
 
             if (diff > 1) {
                 const res = await authService.updateProfile({
