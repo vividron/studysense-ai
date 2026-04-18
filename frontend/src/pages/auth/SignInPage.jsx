@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
 import * as authService from "../../api/auth.api.js";
 import toast from "react-hot-toast";
@@ -12,8 +12,11 @@ const SignInPage = () => {
 
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
+  const [searchParams] = useSearchParams();
+  const DemoUserEmail = searchParams.get("email");
+  const DemoUserPass = searchParams.get("password");
 
-  if(isAuthenticated) navigate("/activity");
+  if (isAuthenticated) navigate("/activity");
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -69,6 +72,7 @@ const SignInPage = () => {
               />
               <input
                 type="email"
+                value={DemoUserEmail ?? ""}
                 {...register("email")}
                 className={`w-full rounded-xl bg-transparent border px-11 py-2.5 text-white focus:outline-none transition ${errors.email ? "border-red-500 focus:border-red-500" : "border-white/10 focus:border-(--primary)"}`}
               />
@@ -94,6 +98,7 @@ const SignInPage = () => {
               />
               <input
                 type={showPassword ? "text" : "password"}
+                value={DemoUserPass ?? ""}
                 {...register("password")}
                 className={`w-full rounded-xl ${showPassword ? "" : "text-xl font-bold tracking-widest"} bg-transparent border px-11 py-2 text-white focus:outline-none focus:border-(--primary) transition ${errors.password ? "border-red-500 focus:border-red-500" : "border-white/10 focus:border-(--primary)"}`}
               />
